@@ -1,6 +1,9 @@
 package by.tms.diplomrestc51.controller;
 
 import by.tms.diplomrestc51.entity.User;
+import by.tms.diplomrestc51.exception.ExistsException;
+import by.tms.diplomrestc51.exception.InvalidException;
+import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.UserRepository;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +35,7 @@ public class UserController {
                                     @PathVariable("username") String username) {
 
         if (username == null | userRepository.findByUsername(username).isEmpty()) {
- //           throw new NotFoundException();
+            throw new NotFoundException();
         }
         User getUser = userRepository.findByUsername(username).get();
 
@@ -50,11 +53,11 @@ public class UserController {
                                      @Valid @RequestBody User user, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
- //           throw new InvalidException();
+            throw new InvalidException();
         }
 
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-//            throw new ExistsException();
+            throw new ExistsException();
         }
 
         User save = userRepository.save(user);
@@ -75,11 +78,11 @@ public class UserController {
                                        BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-//            throw new InvalidException();
+            throw new InvalidException();
         }
 
         if (username == null | userRepository.findByUsername(username).isEmpty()) {
-//            throw new NotFoundException();
+            throw new NotFoundException();
         }
         User update = userRepository.findByUsername(username).get();
         user.setId(update.getId());
@@ -97,7 +100,8 @@ public class UserController {
     public void deleteUser(@ApiParam(value = "username that need to be deleted", example = "username")
                            @PathVariable("username") String username) {
 
-        if (username == null | userRepository.findByUsername(username).isEmpty()) {//           throw new NotFoundException();
+        if (username == null | userRepository.findByUsername(username).isEmpty()) {
+                       throw new NotFoundException();
         }
         User user = userRepository.findByUsername(username).get();
         userRepository.delete(user);
