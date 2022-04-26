@@ -40,7 +40,7 @@ public class User {
     private String phone;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-    private List<User> roleList;
+    private List<Role> roleList;
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;

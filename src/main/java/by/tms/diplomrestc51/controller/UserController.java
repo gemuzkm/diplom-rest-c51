@@ -106,5 +106,4 @@ public class UserController {
         User user = userRepository.findByUsername(username).get();
         userRepository.delete(user);
     }
-
 }
