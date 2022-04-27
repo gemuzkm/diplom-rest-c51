@@ -7,8 +7,7 @@ public class JWTAuthenticationException extends AuthenticationException {
         super(msg);
     }
 
-   public JWTAuthenticationException() {
+    public JWTAuthenticationException() {
         super();
     }
-
 }

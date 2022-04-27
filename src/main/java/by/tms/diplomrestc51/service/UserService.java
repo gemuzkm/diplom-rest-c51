@@ -34,7 +34,7 @@ public class UserService {
         Role role = new Role();
         role.setTypeOfRole("USER");
         roles.add(role);
-        user.setRoleList(roles);
+        user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         role.setUser(user);

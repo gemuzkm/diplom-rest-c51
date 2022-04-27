@@ -7,6 +7,7 @@ import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.metamodel.Bindable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -25,6 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+
 public class AuthentificationController {
     private final UserService service;
     private final AuthenticationManager authenticationManager;
@@ -43,7 +44,7 @@ public class AuthentificationController {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
         User user = service.findByUsername(username);
 
-        String token = jwtTokenProvider.generateToken(username, user.getRoleList());
+        String token = jwtTokenProvider.generateToken(username, user.getRoles());
 
         Map<Object, Object> resp = new HashMap<>();
         resp.put("username", username);
@@ -74,5 +75,17 @@ public class AuthentificationController {
         }
 
         return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value="/adminping", method = RequestMethod.GET)
+    public String adminPing(){
+        return "Only Admins Can Read This";
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @RequestMapping(value="/userping", method = RequestMethod.GET)
+    public String userPing(){
+        return "Any User Can Read This";
     }
 }

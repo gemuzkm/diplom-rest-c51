@@ -20,7 +20,7 @@ public class GenerateJWTUser {
                 user.getLastName(),
                 user.getEmail(),
                 user.getPhone(),
-                mapToGrantedAuthorities(new ArrayList<>(user.getRoleList())),
+                mapToGrantedAuthorities(new ArrayList<>(user.getRoles())),
                 user.getStatus().equals(UserStatus.ACTIVE)
         );
     }
