@@ -12,11 +12,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.metamodel.Bindable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,8 +53,8 @@ public class AuthentificationController {
     }
 
     @PostMapping("/reg")
-    public ResponseEntity<UserDTO> registration(@RequestBody UserDTO userDTO){
-        if (service.existByUsername(userDTO.getUsername()) || service.existByEmail(userDTO.getEmail())){
+    public ResponseEntity<UserDTO> registration(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors() | service.existByUsername(userDTO.getUsername()) | service.existByEmail(userDTO.getEmail())){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         service.registration(userDTO);
