@@ -5,6 +5,7 @@ import by.tms.diplomrestc51.exception.ExistsException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.UserRepository;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Repository
-@RequestMapping("/user")
+@RestController
+@Api(tags = "User", description = "Operation about user")
+@RequestMapping("/api/v1/user")
 public class UserController {
-
     @Autowired
     private UserRepository userRepository;
 
