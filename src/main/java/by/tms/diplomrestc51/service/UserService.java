@@ -1,10 +1,13 @@
 package by.tms.diplomrestc51.service;
 
+import by.tms.diplomrestc51.dto.UserDTO;
 import by.tms.diplomrestc51.entity.Role;
 import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.enums.UserStatus;
+import by.tms.diplomrestc51.mapper.UserMapper;
 import by.tms.diplomrestc51.repository.RoleRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +15,9 @@ import java.util.List;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
@@ -21,7 +27,8 @@ public class UserService {
     }
 
     public void registration(UserDTO userDTO) {
-        User user = UserConverter.convertToUserFromUserSignupDTO(userDTO);
+//        User user = UserConverter.convertToUserFromUserSignupDTO(userDTO);
+        User user = userMapper.userDtoToUser(userDTO);
         List<Role> roles = new ArrayList<>();
         Role role = new Role();
         role.setTypeOfRole("USER");
