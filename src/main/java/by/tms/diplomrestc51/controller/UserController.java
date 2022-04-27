@@ -5,6 +5,7 @@ import by.tms.diplomrestc51.exception.ExistsException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.UserRepository;
+import by.tms.diplomrestc51.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "404", description = "User not found")
@@ -35,12 +41,17 @@ public class UserController {
     public ResponseEntity<User> get(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing", example = "username")
                                     @PathVariable("username") String username) {
 
+
         if (username == null | userRepository.findByUsername(username).isEmpty()) {
             throw new NotFoundException();
         }
-        User getUser = userRepository.findByUsername(username).get();
 
-        return ResponseEntity.ok(getUser);
+        if (userService.getAuthenticationUserName().equals(username)) {
+            User getUser = userRepository.findByUsername(username).get();
+            return ResponseEntity.ok(getUser);
+        } else {
+            throw new InvalidException();
+        }
     }
 
     @ApiResponses(value = {

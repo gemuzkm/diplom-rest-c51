@@ -8,6 +8,8 @@ import by.tms.diplomrestc51.mapper.UserMapper;
 import by.tms.diplomrestc51.repository.RoleRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,5 +56,9 @@ public class UserService {
 
     public boolean existByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public String getAuthenticationUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

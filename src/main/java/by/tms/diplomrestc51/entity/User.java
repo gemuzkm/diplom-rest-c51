@@ -1,6 +1,7 @@
 package by.tms.diplomrestc51.entity;
 
 import by.tms.diplomrestc51.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,9 +40,11 @@ public class User {
     @Pattern(regexp = "^(\\+)?(\\(\\d{2,3}\\) ?\\d|\\d)(([ \\-]?\\d)|( ?\\(\\d{2,3}\\) ?)){5,12}\\d$")
     private String phone;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Role> roles;
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
