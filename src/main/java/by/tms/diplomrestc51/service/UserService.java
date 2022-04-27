@@ -7,7 +7,8 @@ import by.tms.diplomrestc51.enums.UserStatus;
 import by.tms.diplomrestc51.mapper.UserMapper;
 import by.tms.diplomrestc51.repository.RoleRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,25 +16,26 @@ import java.util.List;
 
 @Service
 public class UserService {
-
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, @Lazy BCryptPasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     public void registration(UserDTO userDTO) {
-//        User user = UserConverter.convertToUserFromUserSignupDTO(userDTO);
         User user = userMapper.userDtoToUser(userDTO);
         List<Role> roles = new ArrayList<>();
         Role role = new Role();
         role.setTypeOfRole("USER");
         roles.add(role);
         user.setRoleList(roles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         role.setUser(user);
         userRepository.save(user);
