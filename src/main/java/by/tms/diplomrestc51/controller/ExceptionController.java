@@ -1,6 +1,7 @@
 package by.tms.diplomrestc51.controller;
 
 import by.tms.diplomrestc51.exception.ExistsException;
+import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,18 +25,26 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     @Value("${exists}")
     private String msgExists;
 
+    @Value("${forbidden}")
+    private String msgForbidden;
+
     @ExceptionHandler(InvalidException.class)
     public ResponseEntity<Object> invalidInputException(InvalidException ex) {
         return new ResponseEntity(msgInvalidInput, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> userNotFoundException(NotFoundException ex) {
+    public ResponseEntity<Object> notFoundException(NotFoundException ex) {
         return new ResponseEntity(msgNotFound, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ExistsException.class)
-    public ResponseEntity<Object> userExistsException(ExistsException ex) {
+    public ResponseEntity<Object> existsException(ExistsException ex) {
         return new ResponseEntity(msgExists, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Object> forbiddenException(ExistsException ex) {
+        return new ResponseEntity(msgForbidden, HttpStatus.FORBIDDEN);
     }
 }

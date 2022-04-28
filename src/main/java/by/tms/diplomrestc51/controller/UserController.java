@@ -2,6 +2,7 @@ package by.tms.diplomrestc51.controller;
 
 import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.exception.ExistsException;
+import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.UserRepository;
@@ -26,15 +27,18 @@ import javax.validation.Valid;
 @Api(tags = "User", description = "Operation about user")
 @RequestMapping("/api/v1/user")
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public UserController(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @ApiOperation(value = "Get user by user name", authorizations = {@Authorization(value = "apiKey")})
     @GetMapping(value = "/{username}", produces = "application/json")
@@ -50,37 +54,15 @@ public class UserController {
             User getUser = userRepository.findByUsername(username).get();
             return ResponseEntity.ok(getUser);
         } else {
-            throw new InvalidException();
+            throw new ForbiddenException();
         }
-    }
-
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "405", description = "Invalid input"),
-            @ApiResponse(responseCode = "409", description = "User already exists")
-    })
-    @ApiOperation(value = "Create user", notes = "This can only be done by the logged in user")
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<User> save(@ApiParam(value = "Created user object", name = "body")
-                                     @Valid @RequestBody User user, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            throw new InvalidException();
-        }
-
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new ExistsException();
-        }
-
-        User save = userRepository.save(user);
-
-        return ResponseEntity.ok(save);
     }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "404", description = "User not found"),
-            @ApiResponse(responseCode = "405", description = "Invalid input")
+            @ApiResponse(responseCode = "405", description = "Invalid input"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @ApiOperation(value = "Updated user", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @PutMapping(value = "/{username}", produces = "application/json")
@@ -96,16 +78,22 @@ public class UserController {
         if (username == null | userRepository.findByUsername(username).isEmpty()) {
             throw new NotFoundException();
         }
-        User update = userRepository.findByUsername(username).get();
-        user.setId(update.getId());
-        userRepository.save(user);
 
-        return ResponseEntity.ok(update);
+        if (userService.getAuthenticationUserName().equals(username)) {
+            User update = userRepository.findByUsername(username).get();
+            user.setId(update.getId());
+            userRepository.save(user);
+
+            return ResponseEntity.ok(update);
+        } else {
+            throw new ForbiddenException();
+        }
     }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @ApiOperation(value = "Delete user", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @DeleteMapping(value = "/{username}", produces = "application/json")
@@ -113,9 +101,14 @@ public class UserController {
                            @PathVariable("username") String username) {
 
         if (username == null | userRepository.findByUsername(username).isEmpty()) {
-                       throw new NotFoundException();
+            throw new NotFoundException();
         }
-        User user = userRepository.findByUsername(username).get();
-        userRepository.delete(user);
+
+        if (userService.getAuthenticationUserName().equals(username)) {
+            User user = userRepository.findByUsername(username).get();
+            userRepository.delete(user);
+        } else {
+            throw new ForbiddenException();
+        }
     }
 }
