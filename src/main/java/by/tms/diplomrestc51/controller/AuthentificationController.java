@@ -25,7 +25,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-
 public class AuthentificationController {
     private final UserService service;
     private final AuthenticationManager authenticationManager;
@@ -77,15 +76,15 @@ public class AuthentificationController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value="/adminping", method = RequestMethod.GET)
-    public String adminPing(){
-        return "Only Admins Can Read This";
-    }
-
-    @PreAuthorize("hasRole('USER')")
-    @RequestMapping(value="/userping", method = RequestMethod.GET)
-    public String userPing(){
-        return "Any User Can Read This";
-    }
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @RequestMapping(value="/adminping", method = RequestMethod.GET)
+//    public String adminPing(){
+//        return "Only Admins Can Read This";
+//    }
+//
+//    @PreAuthorize("hasRole('USER')")
+//    @RequestMapping(value="/userping", method = RequestMethod.GET)
+//    public String userPing(){
+//        return "Any User Can Read This";
+//    }
 }
