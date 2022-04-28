@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class JWTTokenProvider {
+public class JwtTokenProvider {
     @Value("${jwt.token.secret}")
     private String jwtSecret;
 
@@ -30,7 +30,7 @@ public class JWTTokenProvider {
 
     private UserDetailsService userDetailsService;
 
-    public JWTTokenProvider(UserDetailsService userDetailsService) {
+    public JwtTokenProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

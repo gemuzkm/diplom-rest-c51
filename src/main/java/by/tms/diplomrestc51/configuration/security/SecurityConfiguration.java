@@ -1,12 +1,11 @@
 package by.tms.diplomrestc51.configuration.security;
 
-import by.tms.diplomrestc51.configuration.security.jwt.JWTConfig;
-import by.tms.diplomrestc51.configuration.security.jwt.JWTTokenProvider;
+import by.tms.diplomrestc51.configuration.security.jwt.JwtConfiguration;
+import by.tms.diplomrestc51.configuration.security.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,7 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final JWTTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private static final String ADMIN_ENDPOINT = "/api/admin/**";
     private static final String LOGIN_ENDPOINT = "/api/v1/auth/**";
     private static final String[] PUBLIC_URLS = {
@@ -37,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/**/*.js"
     };
 
-    public SecurityConfiguration(JWTTokenProvider jwtTokenProvider) {
+    public SecurityConfiguration(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -49,8 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                .disable()
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -60,7 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/db/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JWTConfig(jwtTokenProvider));
+                .apply(new JwtConfiguration(jwtTokenProvider));
         http
                 .headers().frameOptions().sameOrigin();
     }

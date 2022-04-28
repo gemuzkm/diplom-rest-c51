@@ -1,13 +1,12 @@
 package by.tms.diplomrestc51.controller;
 
-import by.tms.diplomrestc51.configuration.security.jwt.JWTTokenProvider;
+import by.tms.diplomrestc51.configuration.security.jwt.JwtTokenProvider;
 import by.tms.diplomrestc51.dto.AuthRequestDTO;
 import by.tms.diplomrestc51.dto.UserDTO;
 import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,9 +27,9 @@ import java.util.Map;
 public class AuthentificationController {
     private final UserService service;
     private final AuthenticationManager authenticationManager;
-    private final JWTTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthentificationController(UserService service, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider) {
+    public AuthentificationController(UserService service, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.service = service;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;

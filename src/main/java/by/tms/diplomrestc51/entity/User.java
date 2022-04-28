@@ -1,6 +1,6 @@
 package by.tms.diplomrestc51.entity;
 
-import by.tms.diplomrestc51.enums.UserStatus;
+import by.tms.diplomrestc51.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "users")
 public class User {
 
     @Id
@@ -46,6 +47,6 @@ public class User {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private Status status;
 
 }
