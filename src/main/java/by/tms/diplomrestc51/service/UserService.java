@@ -7,6 +7,8 @@ import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.mapper.UserMapper;
 import by.tms.diplomrestc51.repository.RoleRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,16 +18,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, @Lazy BCryptPasswordEncoder passwordEncoder, UserMapper userMapper) {
+    @Autowired
+    @Lazy
+    private BCryptPasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
+                       UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
     }
 
@@ -39,8 +46,11 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(Status.ACTIVE);
         role.setUser(user);
-        userRepository.save(user);
+        User saveUser = userRepository.save(user);
         roleRepository.save(role);
+
+        log.info("IN register - user: {} successfully registered", saveUser);
+
     }
 
     public User findByUsername(String username) {
