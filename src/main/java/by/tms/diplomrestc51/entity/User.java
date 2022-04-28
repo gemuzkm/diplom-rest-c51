@@ -49,4 +49,17 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", roles=" + roles +
+                ", status=" + status +
+                '}';
+    }
 }

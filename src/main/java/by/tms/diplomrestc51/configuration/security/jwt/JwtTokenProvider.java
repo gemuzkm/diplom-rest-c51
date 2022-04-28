@@ -44,7 +44,7 @@ public class JwtTokenProvider {
         jwtSecret = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
     }
 
-    public String generateToken(String username, List<Role> roles){
+    public String generateToken(String username, List<Role> roles) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", getUserRoleNamesFromJWT(roles));
 
@@ -64,7 +64,7 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String getUserUsernameFromJWT(String token){
+    public String getUserUsernameFromJWT(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -77,7 +77,7 @@ public class JwtTokenProvider {
     }
 
     @SneakyThrows
-    public  boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
 
@@ -87,7 +87,7 @@ public class JwtTokenProvider {
         }
     }
 
-    private List<String> getUserRoleNamesFromJWT(List<Role> roles){
+    private List<String> getUserRoleNamesFromJWT(List<Role> roles) {
         List<String> result = new ArrayList<>();
         roles.forEach(role -> result.add(role.getTypeOfRole()));
         return result;
