@@ -4,7 +4,13 @@ import by.tms.diplomrestc51.configuration.security.jwt.JwtTokenProvider;
 import by.tms.diplomrestc51.dto.AuthRequestDTO;
 import by.tms.diplomrestc51.dto.UserDTO;
 import by.tms.diplomrestc51.entity.User;
+import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Api(tags = "Authentification", description = "Authentication of users")
 @RequestMapping("/api/v1/auth")
 public class AuthentificationController {
     private final UserService service;
@@ -35,32 +42,55 @@ public class AuthentificationController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "405", description = "Invalid input")
+    })
+    @ApiOperation(value = "Authorization. Receiving Token.")
     @PostMapping("/login")
-    public ResponseEntity<Map<Object, Object>> logIn(@RequestBody AuthRequestDTO requestDto){
+    public ResponseEntity<Map<Object, Object>> logIn(@Valid
+                                                     @ApiParam(value = "Authorization, via username and password")
+                                                     @RequestBody AuthRequestDTO requestDto, BindingResult bindingResult) {
 
-        String username = requestDto.getUsername();
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-        User user = service.findByUsername(username);
+        if (bindingResult.hasErrors()) {
+            throw new InvalidException();
+        }
 
-        String token = jwtTokenProvider.generateToken(username, user.getRoles());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
+        User user = service.findByUsername(requestDto.getUsername());
+
+        String token = jwtTokenProvider.generateToken(requestDto.getUsername(), user.getRoles());
 
         Map<Object, Object> resp = new HashMap<>();
-        resp.put("username", username);
+        resp.put("username", requestDto.getUsername());
         resp.put("token", token);
 
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "405", description = "Invalid input")
+    })
+    @ApiOperation(value = "New user registration")
     @PostMapping("/reg")
-    public ResponseEntity<UserDTO> registration(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors() | service.existByUsername(userDTO.getUsername()) | service.existByEmail(userDTO.getEmail())){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserDTO> registration(@Valid
+                                                    @ApiParam(value = "New user registration with verification of all datad")
+                                                    @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors() | service.existByUsername(userDTO.getUsername()) | service.existByEmail(userDTO.getEmail())) {
+            throw new InvalidException();
         }
         service.registration(userDTO);
 
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    @ApiOperation(value = "Ending a user session")
     @GetMapping("/logout")
     public ResponseEntity<Map<Object, Object>> logOut(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -74,16 +104,4 @@ public class AuthentificationController {
 
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
-
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @RequestMapping(value="/adminping", method = RequestMethod.GET)
-//    public String adminPing(){
-//        return "Only Admins Can Read This";
-//    }
-//
-//    @PreAuthorize("hasRole('USER')")
-//    @RequestMapping(value="/userping", method = RequestMethod.GET)
-//    public String userPing(){
-//        return "Any User Can Read This";
-//    }
 }

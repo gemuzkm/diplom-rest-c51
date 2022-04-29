@@ -1,7 +1,7 @@
 package by.tms.diplomrestc51.configuration.security.jwt;
 
 import by.tms.diplomrestc51.entity.Role;
-import by.tms.diplomrestc51.exception.JWTAuthenticationException;
+import by.tms.diplomrestc51.exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,7 +83,7 @@ public class JwtTokenProvider {
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JWTAuthenticationException("JWT token is expired or invalid");
+            throw new JwtAuthenticationException("JWT token is expired or invalid");
         }
     }
 

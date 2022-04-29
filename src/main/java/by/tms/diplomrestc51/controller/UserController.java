@@ -42,7 +42,7 @@ public class UserController {
     })
     @ApiOperation(value = "Get user by user name", authorizations = {@Authorization(value = "apiKey")})
     @GetMapping(value = "/{username}", produces = "application/json")
-    public ResponseEntity<User> get(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing", example = "username")
+    public ResponseEntity<User> get(@ApiParam(value = "The name that needs to be fetched.", example = "username")
                                     @PathVariable("username") String username) {
 
 
