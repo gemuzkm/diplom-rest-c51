@@ -14,11 +14,11 @@ import java.util.List;
 
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
@@ -45,7 +45,7 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Role> roles;
 
-    @JsonIgnore
+//    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private Status status;
 
