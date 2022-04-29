@@ -14,16 +14,11 @@ import java.util.List;
 
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends BaseEntity {
     @Size(min = 3, max = 25)
     private String username;
 
@@ -45,14 +40,14 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Role> roles;
 
-    @JsonIgnore
+//    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

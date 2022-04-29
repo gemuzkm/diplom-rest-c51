@@ -27,7 +27,7 @@ public class GenerateJwtUser {
 
     private static List<GrantedAuthority> mapToGrantedAuthorities(List<Role> roles){
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getTypeOfRole()))
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
     }
 }

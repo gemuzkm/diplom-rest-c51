@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @Api(tags = "Authentification", description = "Authentication of users")
 @RequestMapping("/api/v1/auth")
@@ -66,6 +68,8 @@ public class AuthentificationController {
         resp.put("username", requestDto.getUsername());
         resp.put("token", token);
 
+        log.info("User - {} - logged in", requestDto.getUsername());
+
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
@@ -101,6 +105,8 @@ public class AuthentificationController {
             resp.put("session, lastAccessedTime", session.getLastAccessedTime());
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
+
+        log.info("User - {} - logged out", auth.getName());
 
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
