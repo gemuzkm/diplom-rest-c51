@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@Api(tags = "User", description = "Operation about user")
+@Api(tags = "User", description = "Operations on the user")
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserRepository userRepository;
@@ -41,7 +41,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @ApiOperation(value = "Get user by user name", authorizations = {@Authorization(value = "apiKey")})
-    @GetMapping(value = "/{username}", produces = "application/json")
+    @GetMapping(produces = "application/json")
     public ResponseEntity<User> get(@ApiParam(value = "The name that needs to be fetched.", example = "username")
                                     @PathVariable("username") String username) {
 
@@ -106,7 +106,7 @@ public class UserController {
 
         if (userService.getAuthenticationUserName().equals(username)) {
             User user = userRepository.findByUsername(username).get();
-            userRepository.delete(user);
+            userService.deleteUser(user);
         } else {
             throw new ForbiddenException();
         }

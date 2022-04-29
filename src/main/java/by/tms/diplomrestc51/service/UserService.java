@@ -70,4 +70,11 @@ public class UserService {
     public String getAuthenticationUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
+
+    public void deleteUser(User user) {
+        user.setStatus(Status.DELETED);
+        User deleted = userRepository.save(user);
+
+        log.info("IN deleteUser - user: {} successfully deleted", deleted);
+    }
 }
