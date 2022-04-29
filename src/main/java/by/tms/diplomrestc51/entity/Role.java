@@ -11,25 +11,16 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class Role extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private String typeOfRole;
-
-    public Role(String typeOfRole) {
-        this.typeOfRole = typeOfRole;
-    }
+    private String name;
 
     @Override
     public String toString() {
         return "Role{" +
-                "id=" + id +
-                ", typeOfRole='" + typeOfRole + '\'' +
-                '}';
+                "id: " + super.getId() + ", " +
+                "name: " + name + "}";
     }
 }
