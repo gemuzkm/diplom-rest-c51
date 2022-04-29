@@ -89,7 +89,7 @@ public class JwtTokenProvider {
 
     private List<String> getUserRoleNamesFromJWT(List<Role> roles) {
         List<String> result = new ArrayList<>();
-        roles.forEach(role -> result.add(role.getTypeOfRole()));
+        roles.forEach(role -> result.add(role.getName()));
         return result;
     }
 }

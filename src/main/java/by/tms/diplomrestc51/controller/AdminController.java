@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@Api(tags = "User", description = "Operations with users")
+@Api(tags = "Admin", description = "Operations with users")
 @RequestMapping("/api/v1/admin")
 public class AdminController {
     private final UserRepository userRepository;

@@ -40,7 +40,7 @@ public class UserService {
         User user = userMapper.userDtoToUser(userDTO);
         List<Role> roles = new ArrayList<>();
         Role role = new Role();
-        role.setTypeOfRole("USER");
+        role.setName("USER");
         roles.add(role);
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
