@@ -8,7 +8,6 @@ import by.tms.diplomrestc51.mapper.UserMapper;
 import by.tms.diplomrestc51.repository.RoleRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,23 +22,23 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
-    @Autowired
-    @Lazy
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
-                       UserMapper userMapper) {
+                       UserMapper userMapper,
+                       @Lazy BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void registration(UserDTO userDTO) {
         User user = userMapper.userDtoToUser(userDTO);
         List<Role> roles = new ArrayList<>();
         Role role = new Role();
+        role.setStatus(Status.ACTIVE);
         role.setName("USER");
         roles.add(role);
         user.setRoles(roles);
@@ -47,10 +46,9 @@ public class UserService {
         user.setStatus(Status.ACTIVE);
         role.setUser(user);
         User saveUser = userRepository.save(user);
-        roleRepository.save(role);
+        Role saveRole = roleRepository.save(role);
 
         log.info("IN register - user: {} successfully registered", saveUser);
-
     }
 
     public User findByUsername(String username) {

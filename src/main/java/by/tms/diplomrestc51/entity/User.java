@@ -19,11 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "users")
 public class User extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-    private Long id;
-
     @Size(min = 3, max = 25)
     private String username;
 
@@ -52,7 +47,7 @@ public class User extends BaseEntity {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
