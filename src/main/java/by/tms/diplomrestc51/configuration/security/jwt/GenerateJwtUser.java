@@ -1,7 +1,7 @@
 package by.tms.diplomrestc51.configuration.security.jwt;
 
-import by.tms.diplomrestc51.entity.Role;
-import by.tms.diplomrestc51.entity.User;
+import by.tms.diplomrestc51.entity.role.Role;
+import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

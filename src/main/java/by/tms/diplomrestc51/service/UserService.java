@@ -1,8 +1,8 @@
 package by.tms.diplomrestc51.service;
 
 import by.tms.diplomrestc51.dto.UserDTO;
-import by.tms.diplomrestc51.entity.Role;
-import by.tms.diplomrestc51.entity.User;
+import by.tms.diplomrestc51.entity.role.Role;
+import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.mapper.UserMapper;
 import by.tms.diplomrestc51.repository.RoleRepository;
@@ -67,6 +67,10 @@ public class UserService {
 
     public String getAuthenticationUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public User getAuthenticationUser() {
+        return userRepository.findByUsername(getAuthenticationUserName()).get();
     }
 
     public void deleteUser(User user) {

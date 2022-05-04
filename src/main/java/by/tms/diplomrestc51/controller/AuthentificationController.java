@@ -3,7 +3,7 @@ package by.tms.diplomrestc51.controller;
 import by.tms.diplomrestc51.configuration.security.jwt.JwtTokenProvider;
 import by.tms.diplomrestc51.dto.AuthRequestDTO;
 import by.tms.diplomrestc51.dto.UserDTO;
-import by.tms.diplomrestc51.entity.User;
+import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.service.UserService;
 import io.swagger.annotations.Api;
