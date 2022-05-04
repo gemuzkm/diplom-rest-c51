@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @Entity
 @AllArgsConstructor
 //@NoArgsConstructor
-public class WasherDevice extends Device {
+public class RefrigeratorDevice extends Device {
 
     @Override
     public TypeDevice getTypeDevice() {
