@@ -3,6 +3,7 @@ package by.tms.diplomrestc51.controller.user;
 import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.device.WasherDevice;
 import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import by.tms.diplomrestc51.exception.ExistsException;
 import by.tms.diplomrestc51.exception.ForbiddenException;
@@ -149,7 +150,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/devices", produces = "application/json")
-    public ResponseEntity<Device> createDevice(@Valid @RequestBody Device device, BindingResult bindingResult) {
+    public ResponseEntity<?> createDevice(@Valid @RequestBody Device device, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidException();
         }
@@ -159,11 +160,22 @@ public class UserController {
         }
 
         if (device.getTypeDevice().equals(TypeDevice.WASHER)) {
-            WasherDevice washerDevice = new WasherDevice();
-            washerDevice.setTypeDevice(device.getTypeDevice());
+            WasherDevice washerDevice = deviceMapper.deviceToWasherDevice(device);
+
+            if (washerDevice.getStatus() == null) {
+                washerDevice.setStatus(Status.ACTIVE);
+            }
+
+            if (washerDevice.getUser() == null) {
+                washerDevice.setUser(userService.getAuthenticationUser());
+            }
+
+            WasherDevice saveWasher = deviceRepository.save(washerDevice);
+
+            return ResponseEntity.ok(saveWasher);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping(value = "/devices/{id}", produces = "application/json")

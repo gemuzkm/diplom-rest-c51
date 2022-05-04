@@ -4,12 +4,15 @@ import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 public class WasherDevice extends Device {
+
     @Override
     public TypeDevice getTypeDevice() {
         return super.getTypeDevice();
@@ -78,16 +81,6 @@ public class WasherDevice extends Device {
     @Override
     public void setDescription(String description) {
         super.setDescription(description);
-    }
-
-    @Override
-    public int getTemperature() {
-        return super.getTemperature();
-    }
-
-    @Override
-    public void setTemperature(int temperature) {
-        super.setTemperature(temperature);
     }
 
     @Override

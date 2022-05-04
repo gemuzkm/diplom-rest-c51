@@ -2,6 +2,7 @@ package by.tms.diplomrestc51.entity;
 
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -26,8 +27,8 @@ public class Device extends BaseEntity {
     @Column(unique=true)
     private String macAddress;
     private String description;
-    private int temperature;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -85,14 +86,6 @@ public class Device extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(int temperature) {
-        this.temperature = temperature;
     }
 
     public User getUser() {
