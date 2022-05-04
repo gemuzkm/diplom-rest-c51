@@ -3,6 +3,8 @@ package by.tms.diplomrestc51.entity;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,5 +40,21 @@ public class Device extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
     }
 }

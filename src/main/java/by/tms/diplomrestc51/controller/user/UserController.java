@@ -2,11 +2,13 @@ package by.tms.diplomrestc51.controller.user;
 
 import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.exception.ExistsException;
 import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.DeviceRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
+import by.tms.diplomrestc51.service.DeviceService;
 import by.tms.diplomrestc51.service.UserService;
 import by.tms.diplomrestc51.validation.IdValidation;
 import io.swagger.annotations.Api;
@@ -31,6 +33,9 @@ public class UserController {
 
     @Autowired
     private DeviceRepository deviceRepository;
+
+    @Autowired
+    private DeviceService deviceService;
 
     private final UserRepository userRepository;
     private final UserService userService;
@@ -132,7 +137,7 @@ public class UserController {
         if (DeviceById.get().getUser().getUsername().equals(userService.getAuthenticationUserName())) {
             return ResponseEntity.ok(DeviceById.get());
         } else {
-            throw new NotFoundException();
+            throw new InvalidException();
         }
     }
 
@@ -141,6 +146,11 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             throw new InvalidException();
         }
+
+        if (deviceService.existBySerialNumber(device.getSerialNumber()) | deviceService.exitsByMacAddress(device.getMacAddress())) {
+            throw new ExistsException();
+        }
+
         return ResponseEntity.ok(deviceRepository.save(device));
     }
 
@@ -149,6 +159,11 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             throw new InvalidException();
         }
+
+        if (deviceService.existBySerialNumber(device.getSerialNumber()) | deviceService.exitsByMacAddress(device.getMacAddress())) {
+            throw new ExistsException();
+        }
+
         if (deviceRepository.findById(id).isPresent()) {
             Device update = deviceRepository.findById(id).get();
             device.setId(update.getId());
