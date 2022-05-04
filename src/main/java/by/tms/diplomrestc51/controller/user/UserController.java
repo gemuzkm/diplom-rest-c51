@@ -1,6 +1,7 @@
 package by.tms.diplomrestc51.controller.user;
 
 import by.tms.diplomrestc51.entity.Device;
+import by.tms.diplomrestc51.entity.device.RefrigeratorDevice;
 import by.tms.diplomrestc51.entity.device.WasherDevice;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
@@ -173,6 +174,22 @@ public class UserController {
             WasherDevice saveWasher = deviceRepository.save(washerDevice);
 
             return ResponseEntity.ok(saveWasher);
+        }
+
+        if (device.getTypeDevice().equals(TypeDevice.REFRIGERATOR)) {
+            RefrigeratorDevice refrigeratorDevice = deviceMapper.deviceToRefrigeratorDevice(device);
+
+            if (refrigeratorDevice.getStatus() == null) {
+                refrigeratorDevice.setStatus(Status.ACTIVE);
+            }
+
+            if (refrigeratorDevice.getUser() == null) {
+                refrigeratorDevice.setUser(userService.getAuthenticationUser());
+            }
+
+            RefrigeratorDevice saveRefrigerator = deviceRepository.save(refrigeratorDevice);
+
+            return ResponseEntity.ok(saveRefrigerator);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
