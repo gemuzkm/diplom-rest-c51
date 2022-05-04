@@ -1,6 +1,8 @@
-package by.tms.diplomrestc51.entity;
+package by.tms.diplomrestc51.entity.user;
 
-import by.tms.diplomrestc51.enums.Status;
+import by.tms.diplomrestc51.entity.BaseEntity;
+import by.tms.diplomrestc51.entity.BaseDevice;
+import by.tms.diplomrestc51.entity.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,9 +42,8 @@ public class User extends BaseEntity {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Role> roles;
 
-//    @JsonIgnore
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<BaseDevice> baseDevices;
 
     @Override
     public String toString() {
@@ -54,7 +55,7 @@ public class User extends BaseEntity {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", roles=" + roles +
-                ", status=" + status +
+                ", status=" + super.getStatus() +
                 '}';
     }
 }

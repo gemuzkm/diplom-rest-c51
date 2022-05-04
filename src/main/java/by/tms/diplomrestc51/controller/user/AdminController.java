@@ -1,6 +1,6 @@
-package by.tms.diplomrestc51.controller;
+package by.tms.diplomrestc51.controller.user;
 
-import by.tms.diplomrestc51.entity.User;
+import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.UserRepository;

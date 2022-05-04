@@ -1,7 +1,6 @@
-package by.tms.diplomrestc51.controller;
+package by.tms.diplomrestc51.controller.user;
 
-import by.tms.diplomrestc51.entity.User;
-import by.tms.diplomrestc51.exception.ExistsException;
+import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
@@ -13,11 +12,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 

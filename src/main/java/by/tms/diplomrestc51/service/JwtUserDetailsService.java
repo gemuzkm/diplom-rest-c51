@@ -1,7 +1,7 @@
 package by.tms.diplomrestc51.service;
 
 import by.tms.diplomrestc51.configuration.security.jwt.GenerateJwtUser;
-import by.tms.diplomrestc51.entity.User;
+import by.tms.diplomrestc51.entity.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
