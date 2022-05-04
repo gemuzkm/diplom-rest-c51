@@ -1,7 +1,7 @@
 package by.tms.diplomrestc51.entity.user;
 
 import by.tms.diplomrestc51.entity.BaseEntity;
-import by.tms.diplomrestc51.entity.BaseDevice;
+import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -43,7 +43,7 @@ public class User extends BaseEntity {
     private List<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    private List<BaseDevice> baseDevices;
+    private List<Device> devices;
 
     @Override
     public String toString() {

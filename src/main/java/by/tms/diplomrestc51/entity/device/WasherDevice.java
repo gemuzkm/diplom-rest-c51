@@ -1,18 +1,17 @@
 package by.tms.diplomrestc51.entity.device;
 
-import by.tms.diplomrestc51.entity.BaseDevice;
+import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class WasherDevice extends BaseDevice {
+public class WasherDevice extends Device {
 
     private TypeDevice typeDevice = TypeDevice.WASHER;
     private String model;

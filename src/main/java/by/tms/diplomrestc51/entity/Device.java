@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "devices")
-public abstract class BaseDevice extends BaseEntity {
+public abstract class Device extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
