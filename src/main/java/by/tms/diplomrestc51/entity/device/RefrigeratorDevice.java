@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 public class RefrigeratorDevice extends Device {
 
     @Override
