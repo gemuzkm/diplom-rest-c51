@@ -32,8 +32,6 @@ public class UserController {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    @Autowired
-    private IdValidation idValidation;
     private final UserRepository userRepository;
     private final UserService userService;
 
@@ -119,25 +117,23 @@ public class UserController {
         }
     }
 
-
     @GetMapping(value = "/devices", produces = "application/json")
     public ResponseEntity<List<Device>> getDevices() {
-        Optional<List<Device>> allByUsername = deviceRepository.findAllByUsername(userService.getAuthenticationUserName());
+        Optional<List<Device>> allByUsername = deviceRepository.findAllByUser(userService.getAuthenticationUser());
         return ResponseEntity.ok(allByUsername.get());
     }
 
     @GetMapping(value = "/devices/{id}", produces = "application/json")
     public ResponseEntity<Device> getDevice(@PathVariable("id") Long id) {
-        if (id < 1) {
-            throw new InvalidException();
+        IdValidation.validate(id);
+
+        Optional<Device> DeviceById = deviceRepository.findById(id);
+
+        if (DeviceById.get().getUser().getUsername().equals(userService.getAuthenticationUserName())) {
+            return ResponseEntity.ok(DeviceById.get());
+        } else {
+            throw new NotFoundException();
         }
-
-        Optional<Device> byId = deviceRepository.findById(id);
-
-
-
-
-        return ResponseEntity.ok(deviceRepository.findById(id).get());
     }
 
     @PostMapping(value = "/devices", produces = "application/json")
@@ -170,10 +166,4 @@ public class UserController {
             throw new NotFoundException();
         }
     }
-
-    @GetMapping(value = "/devices/{id}/readings", produces = "application/json")
-    public ResponseEntity<List<Reading>> getReadings(@PathVariable("id") Long id) {
-        if (deviceRepository.findById(id).isPresent()) {
-            return ResponseEntity.ok(readingRepository.findByDeviceId(id));
-        } else {
 }
