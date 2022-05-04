@@ -1,11 +1,14 @@
 package by.tms.diplomrestc51.controller.user;
 
 import by.tms.diplomrestc51.entity.Device;
+import by.tms.diplomrestc51.entity.device.WasherDevice;
 import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.enums.TypeDevice;
 import by.tms.diplomrestc51.exception.ExistsException;
 import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
+import by.tms.diplomrestc51.mapper.DeviceMapper;
 import by.tms.diplomrestc51.repository.DeviceRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
 import by.tms.diplomrestc51.service.DeviceService;
@@ -18,6 +21,7 @@ import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +40,9 @@ public class UserController {
 
     @Autowired
     private DeviceService deviceService;
+
+    @Autowired
+    private DeviceMapper deviceMapper;
 
     private final UserRepository userRepository;
     private final UserService userService;
@@ -151,7 +158,12 @@ public class UserController {
             throw new ExistsException();
         }
 
-        return ResponseEntity.ok(deviceRepository.save(device));
+        if (device.getTypeDevice().equals(TypeDevice.WASHER)) {
+            WasherDevice washerDevice = new WasherDevice();
+            washerDevice.setTypeDevice(device.getTypeDevice());
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @PutMapping(value = "/devices/{id}", produces = "application/json")
