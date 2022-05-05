@@ -2,6 +2,7 @@ package by.tms.diplomrestc51.controller.user;
 
 import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.device.RefrigeratorDevice;
+import by.tms.diplomrestc51.entity.device.VacuumCleanerDevice;
 import by.tms.diplomrestc51.entity.device.WasherDevice;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
@@ -190,6 +191,22 @@ public class UserController {
             RefrigeratorDevice saveRefrigerator = deviceRepository.save(refrigeratorDevice);
 
             return ResponseEntity.ok(saveRefrigerator);
+        }
+
+        if (device.getTypeDevice().equals(TypeDevice.VACUUM_CLEANER)) {
+            VacuumCleanerDevice vacuumCleanerDevice = deviceMapper.deviceToVacuumCleanerDevice(device);
+
+            if (vacuumCleanerDevice.getStatus() == null) {
+                vacuumCleanerDevice.setStatus(Status.ACTIVE);
+            }
+
+            if (vacuumCleanerDevice.getUser() == null) {
+                vacuumCleanerDevice.setUser(userService.getAuthenticationUser());
+            }
+
+            VacuumCleanerDevice saveVacuumCleaner = deviceRepository.save(vacuumCleanerDevice);
+
+            return ResponseEntity.ok(saveVacuumCleaner);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
