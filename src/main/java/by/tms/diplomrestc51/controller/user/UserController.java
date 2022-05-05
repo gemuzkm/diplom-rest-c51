@@ -130,6 +130,11 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/devices/supported", produces = "application/json")
+    public ResponseEntity<?> getSupportedDevices() {
+        return ResponseEntity.ok(TypeDevice.values());
+    }
+
     @GetMapping(value = "/devices", produces = "application/json")
     public ResponseEntity<List<Device>> getDevices() {
         Optional<List<Device>> allByUsername = deviceRepository.findAllByUser(userService.getAuthenticationUser());
