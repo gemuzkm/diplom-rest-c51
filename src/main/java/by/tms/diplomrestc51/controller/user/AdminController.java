@@ -1,8 +1,6 @@
-package by.tms.diplomrestc51.controller;
+package by.tms.diplomrestc51.controller.user;
 
-import by.tms.diplomrestc51.entity.User;
-import by.tms.diplomrestc51.exception.ExistsException;
-import by.tms.diplomrestc51.exception.ForbiddenException;
+import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.UserRepository;
@@ -13,24 +11,20 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
-@Api(tags = "User", description = "Operations on the user")
-@RequestMapping("/api/v1/user")
-public class UserController {
+@Api(tags = "Admin", description = "Operations with users")
+@RequestMapping("/api/v1/admin")
+public class AdminController {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
+    public AdminController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
         this.userService = userService;
     }
@@ -41,7 +35,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @ApiOperation(value = "Get user by user name", authorizations = {@Authorization(value = "apiKey")})
-    @GetMapping(produces = "application/json")
+    @GetMapping(value = "/{username}", produces = "application/json")
     public ResponseEntity<User> get(@ApiParam(value = "The name that needs to be fetched.", example = "username")
                                     @PathVariable("username") String username) {
 
@@ -50,12 +44,8 @@ public class UserController {
             throw new NotFoundException();
         }
 
-        if (userService.getAuthenticationUserName().equals(username)) {
-            User getUser = userRepository.findByUsername(username).get();
-            return ResponseEntity.ok(getUser);
-        } else {
-            throw new ForbiddenException();
-        }
+        User getUser = userRepository.findByUsername(username).get();
+        return ResponseEntity.ok(getUser);
     }
 
     @ApiResponses(value = {
@@ -79,21 +69,16 @@ public class UserController {
             throw new NotFoundException();
         }
 
-        if (userService.getAuthenticationUserName().equals(username)) {
-            User update = userRepository.findByUsername(username).get();
-            user.setId(update.getId());
-            userRepository.save(user);
+        User update = userRepository.findByUsername(username).get();
+        user.setId(update.getId());
+        userRepository.save(user);
 
-            return ResponseEntity.ok(update);
-        } else {
-            throw new ForbiddenException();
-        }
+        return ResponseEntity.ok(update);
     }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "User not found"),
-            @ApiResponse(responseCode = "403", description = "Forbidden")
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     @ApiOperation(value = "Delete user", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @DeleteMapping(value = "/{username}", produces = "application/json")
@@ -104,11 +89,7 @@ public class UserController {
             throw new NotFoundException();
         }
 
-        if (userService.getAuthenticationUserName().equals(username)) {
-            User user = userRepository.findByUsername(username).get();
-            userService.deleteUser(user);
-        } else {
-            throw new ForbiddenException();
-        }
+        User user = userRepository.findByUsername(username).get();
+        userService.deleteUser(user);
     }
 }

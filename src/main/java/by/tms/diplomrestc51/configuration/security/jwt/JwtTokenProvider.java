@@ -1,6 +1,6 @@
 package by.tms.diplomrestc51.configuration.security.jwt;
 
-import by.tms.diplomrestc51.entity.Role;
+import by.tms.diplomrestc51.entity.role.Role;
 import by.tms.diplomrestc51.exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import lombok.SneakyThrows;
