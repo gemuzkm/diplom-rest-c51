@@ -295,10 +295,16 @@ public class UserController {
 
     @DeleteMapping(value = "/devices/{id}", produces = "application/json")
     public void deleteDevice(@PathVariable("id") Long id) {
-        if (deviceRepository.findById(id).isPresent()) {
-            deviceRepository.deleteById(id);
-        } else {
+        IdValidation.validate(id);
+
+        if(deviceRepository.findById(id).isEmpty()) {
             throw new NotFoundException();
+        } else if (deviceRepository.findById(id).get().getUser().getId() != userService.getAuthenticationUser().getId()) {
+            throw new ForbiddenException();
+        } else {
+            Device device = deviceRepository.findById(id).get();
+            device.setStatus(Status.DELETED);
+            deviceRepository.save(device);
         }
     }
 }
