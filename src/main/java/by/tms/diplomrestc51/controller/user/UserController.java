@@ -1,10 +1,7 @@
 package by.tms.diplomrestc51.controller.user;
 
 import by.tms.diplomrestc51.entity.Device;
-import by.tms.diplomrestc51.entity.device.RefrigeratorDevice;
-import by.tms.diplomrestc51.entity.device.SmartLampDevice;
-import by.tms.diplomrestc51.entity.device.VacuumCleanerDevice;
-import by.tms.diplomrestc51.entity.device.WasherDevice;
+import by.tms.diplomrestc51.entity.device.*;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
@@ -224,6 +221,22 @@ public class UserController {
             SmartLampDevice saveSmartLamp = deviceRepository.save(smartLampDevice);
 
             return ResponseEntity.ok(saveSmartLamp);
+        }
+
+        if (device.getTypeDevice().equals(TypeDevice.HUMIDITY_SENSOR)) {
+            HumiditySensorDevice humiditySensorDevice = deviceMapper.deviceToHumiditySensorDevice(device);
+
+            if (humiditySensorDevice.getStatus() == null) {
+                humiditySensorDevice.setStatus(Status.ACTIVE);
+            }
+
+            if (humiditySensorDevice.getUser() == null) {
+                humiditySensorDevice.setUser(userService.getAuthenticationUser());
+            }
+
+            HumiditySensorDevice saveHumiditySensor = deviceRepository.save(humiditySensorDevice);
+
+            return ResponseEntity.ok(saveHumiditySensor);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
