@@ -9,7 +9,6 @@ Data assembly and analysis. Generation of recommendations based on the processed
 - Database (MySQL and H2)
 - Spring Data JPA
 - Bean Validation
-- Hibernate Validator
 - Logging SLF4j
 - Junit
 - Maven
