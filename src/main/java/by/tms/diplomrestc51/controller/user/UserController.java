@@ -239,6 +239,22 @@ public class UserController {
             return ResponseEntity.ok(saveHumiditySensor);
         }
 
+        if (device.getTypeDevice().equals(TypeDevice.TEMPERATURE_SENSOR)) {
+            TemperatureSensorDevice temperatureSensorDevice = deviceMapper.deviceToTemperatureSensorDevice(device);
+
+            if (temperatureSensorDevice.getStatus() == null) {
+                temperatureSensorDevice.setStatus(Status.ACTIVE);
+            }
+
+            if (temperatureSensorDevice.getUser() == null) {
+                temperatureSensorDevice.setUser(userService.getAuthenticationUser());
+            }
+
+            TemperatureSensorDevice saveTemperatureSensor = deviceRepository.save(temperatureSensorDevice);
+
+            return ResponseEntity.ok(saveTemperatureSensor);
+        }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
