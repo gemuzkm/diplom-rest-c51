@@ -255,6 +255,22 @@ public class UserController {
             return ResponseEntity.ok(saveTemperatureSensor);
         }
 
+        if (device.getTypeDevice().equals(TypeDevice.SMART_PLUG)) {
+            SmartPlugDevice smartPlugDevice = deviceMapper.deviceToSmartPlugDevice(device);
+
+            if (smartPlugDevice.getStatus() == null) {
+                smartPlugDevice.setStatus(Status.ACTIVE);
+            }
+
+            if (smartPlugDevice.getUser() == null) {
+                smartPlugDevice.setUser(userService.getAuthenticationUser());
+            }
+
+            SmartPlugDevice saveSmartPlug = deviceRepository.save(smartPlugDevice);
+
+            return ResponseEntity.ok(saveSmartPlug);
+        }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

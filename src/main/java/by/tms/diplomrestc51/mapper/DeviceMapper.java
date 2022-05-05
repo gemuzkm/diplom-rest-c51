@@ -14,4 +14,5 @@ public interface DeviceMapper {
     SmartLampDevice deviceToSmartLampDevice(Device device);
     HumiditySensorDevice deviceToHumiditySensorDevice(Device device);
     TemperatureSensorDevice deviceToTemperatureSensorDevice(Device device);
+    SmartPlugDevice deviceToSmartPlugDevice(Device device);
 }
