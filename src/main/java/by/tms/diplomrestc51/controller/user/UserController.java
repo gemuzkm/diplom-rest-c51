@@ -285,17 +285,25 @@ public class UserController {
             throw new InvalidException();
         }
 
+        Device deviceToUpdate = deviceRepository.findById(id).orElseThrow(InvalidException::new);
+
+        if (deviceToUpdate.getUser().getId() != userService.getAuthenticationUser().getId()) {
+            throw new InvalidException();
+        }
+
         if (deviceService.existBySerialNumber(device.getSerialNumber()) | deviceService.exitsByMacAddress(device.getMacAddress())) {
             throw new ExistsException();
         }
 
-        if (deviceRepository.findById(id).isPresent()) {
-            Device update = deviceRepository.findById(id).get();
-            device.setId(update.getId());
-            return ResponseEntity.ok(deviceRepository.save(device));
-        } else {
-            throw new NotFoundException();
-        }
+        deviceToUpdate.setModel(device.getModel());
+        deviceToUpdate.setSerialNumber(device.getSerialNumber());
+        deviceToUpdate.setMacAddress(device.getMacAddress());
+        deviceToUpdate.setFirmwareVersion(device.getFirmwareVersion());
+        deviceToUpdate.setIpAddress(device.getIpAddress());
+        deviceToUpdate.setStatus(device.getStatus());
+
+        Device save = deviceRepository.save(deviceToUpdate);
+        return ResponseEntity.ok(save);
     }
 
     @DeleteMapping(value = "/devices/{id}", produces = "application/json")
