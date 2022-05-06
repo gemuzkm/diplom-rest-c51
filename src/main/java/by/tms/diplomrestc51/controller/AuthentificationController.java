@@ -4,6 +4,7 @@ import by.tms.diplomrestc51.configuration.security.jwt.JwtTokenProvider;
 import by.tms.diplomrestc51.dto.AuthRequestDTO;
 import by.tms.diplomrestc51.dto.UserDTO;
 import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.service.UserService;
 import io.swagger.annotations.Api;
@@ -62,15 +63,25 @@ public class AuthentificationController {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
         User user = service.findByUsername(requestDto.getUsername());
 
-        String token = jwtTokenProvider.generateToken(requestDto.getUsername(), user.getRoles());
+        if (user.getStatus().equals(Status.ACTIVE)) {
+            String token = jwtTokenProvider.generateToken(requestDto.getUsername(), user.getRoles());
 
-        Map<Object, Object> resp = new HashMap<>();
-        resp.put("username", requestDto.getUsername());
-        resp.put("token", token);
+            Map<Object, Object> resp = new HashMap<>();
+            resp.put("username", requestDto.getUsername());
+            resp.put("token", token);
 
-        log.info("User - {} - logged in", requestDto.getUsername());
+            log.info(" User - {} - logged in", requestDto.getUsername());
 
-        return new ResponseEntity<>(resp, HttpStatus.OK);
+            return new ResponseEntity<>(resp, HttpStatus.OK);
+        } else {
+            Map<Object, Object> resp = new HashMap<>();
+            resp.put("username", requestDto.getUsername());
+            resp.put("message", "User is not active");
+
+            log.info("User - {} - not activated", requestDto.getUsername());
+
+            return new ResponseEntity<>(resp, HttpStatus.FORBIDDEN);
+        }
     }
 
     @ApiResponses(value = {
