@@ -4,6 +4,7 @@ import by.tms.diplomrestc51.dto.UserDTO;
 import by.tms.diplomrestc51.entity.role.Role;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
+import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.mapper.UserMapper;
 import by.tms.diplomrestc51.repository.RoleRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
@@ -78,5 +79,29 @@ public class UserService {
         User deleted = userRepository.save(user);
 
         log.info("IN deleteUser - user: {} successfully deleted", deleted);
+    }
+
+    public boolean isAdmin() {
+        if (getAuthenticationUser().getRoles().equals("ADMIN")) {
+            return true;
+        } else {
+            throw new InvalidException("User is not admin");
+        }
+    }
+
+    public boolean isUser() {
+        if (getAuthenticationUser().getRoles().equals("USER")) {
+            return true;
+        } else {
+            throw new InvalidException("User is not user");
+        }
+    }
+
+    public boolean isActive(User user) {
+        if (user.getStatus().equals("ACTIVE")) {
+            return true;
+        } else {
+            throw new InvalidException("User is not active");
+        }
     }
 }
