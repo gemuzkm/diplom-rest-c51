@@ -36,21 +36,22 @@ import java.util.Optional;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-    @Autowired
-    private DeviceRepository deviceRepository;
-
-    @Autowired
-    private DeviceService deviceService;
-
-    @Autowired
-    private DeviceMapper deviceMapper;
-
+    private final DeviceRepository deviceRepository;
+    private final DeviceService deviceService;
+    private final DeviceMapper deviceMapper;
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(UserRepository userRepository,
+                          UserService userService,
+                          DeviceRepository deviceRepository,
+                          DeviceService deviceService,
+                          DeviceMapper deviceMapper) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.deviceRepository = deviceRepository;
+        this.deviceService = deviceService;
+        this.deviceMapper = deviceMapper;
     }
 
     @ApiResponses(value = {
@@ -78,9 +79,9 @@ public class UserController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "User not found"),
-            @ApiResponse(responseCode = "405", description = "Invalid input"),
-            @ApiResponse(responseCode = "403", description = "Forbidden")
+            @ApiResponse(responseCode = "405", description = "Invalid input")
     })
     @ApiOperation(value = "Updated user", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @PutMapping(value = "/{username}", produces = "application/json")
@@ -130,14 +131,37 @@ public class UserController {
         }
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @ApiOperation(value = "List of supported devices", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
+    @GetMapping(value = "/devices/supported", produces = "application/json")
+    public ResponseEntity<?> getSupportedDevices() {
+        return ResponseEntity.ok(TypeDevice.values());
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @ApiOperation(value = "List of user devices", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @GetMapping(value = "/devices", produces = "application/json")
     public ResponseEntity<List<Device>> getDevices() {
         Optional<List<Device>> allByUsername = deviceRepository.findAllByUser(userService.getAuthenticationUser());
         return ResponseEntity.ok(allByUsername.get());
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Device not found"),
+            @ApiResponse(responseCode = "405", description = "Invalid input")
+    })
+    @ApiOperation(value = "Get user device by ID", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @GetMapping(value = "/devices/{id}", produces = "application/json")
-    public ResponseEntity<Device> getDevice(@PathVariable("id") Long id) {
+    public ResponseEntity<Device> getDevice(@ApiParam(value = "The ID of the device you want to get information about", example = "1")
+                                            @PathVariable("id") Long id) {
         IdValidation.validate(id);
 
         Optional<Device> DeviceById = deviceRepository.findById(id);
@@ -149,8 +173,17 @@ public class UserController {
         }
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "The device does not exist"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "405", description = "Invalid input")
+    })
+    @ApiOperation(value = "Add device to user", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @PostMapping(value = "/devices", produces = "application/json")
-    public ResponseEntity<?> createDevice(@Valid @RequestBody Device device, BindingResult bindingResult) {
+    public ResponseEntity<?> createDevice(@Valid
+                                          @ApiParam(value = "A device with a basic description is added", example = "Device")
+                                          @RequestBody Device device, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidException();
         }
@@ -159,17 +192,11 @@ public class UserController {
             throw new ExistsException();
         }
 
+        device.setStatus(Status.ACTIVE);
+        device.setUser(userService.getAuthenticationUser());
+
         if (device.getTypeDevice().equals(TypeDevice.WASHER)) {
             WasherDevice washerDevice = deviceMapper.deviceToWasherDevice(device);
-
-            if (washerDevice.getStatus() == null) {
-                washerDevice.setStatus(Status.ACTIVE);
-            }
-
-            if (washerDevice.getUser() == null) {
-                washerDevice.setUser(userService.getAuthenticationUser());
-            }
-
             WasherDevice saveWasher = deviceRepository.save(washerDevice);
 
             return ResponseEntity.ok(saveWasher);
@@ -177,15 +204,6 @@ public class UserController {
 
         if (device.getTypeDevice().equals(TypeDevice.REFRIGERATOR)) {
             RefrigeratorDevice refrigeratorDevice = deviceMapper.deviceToRefrigeratorDevice(device);
-
-            if (refrigeratorDevice.getStatus() == null) {
-                refrigeratorDevice.setStatus(Status.ACTIVE);
-            }
-
-            if (refrigeratorDevice.getUser() == null) {
-                refrigeratorDevice.setUser(userService.getAuthenticationUser());
-            }
-
             RefrigeratorDevice saveRefrigerator = deviceRepository.save(refrigeratorDevice);
 
             return ResponseEntity.ok(saveRefrigerator);
@@ -193,15 +211,6 @@ public class UserController {
 
         if (device.getTypeDevice().equals(TypeDevice.VACUUM_CLEANER)) {
             VacuumCleanerDevice vacuumCleanerDevice = deviceMapper.deviceToVacuumCleanerDevice(device);
-
-            if (vacuumCleanerDevice.getStatus() == null) {
-                vacuumCleanerDevice.setStatus(Status.ACTIVE);
-            }
-
-            if (vacuumCleanerDevice.getUser() == null) {
-                vacuumCleanerDevice.setUser(userService.getAuthenticationUser());
-            }
-
             VacuumCleanerDevice saveVacuumCleaner = deviceRepository.save(vacuumCleanerDevice);
 
             return ResponseEntity.ok(saveVacuumCleaner);
@@ -209,15 +218,6 @@ public class UserController {
 
         if (device.getTypeDevice().equals(TypeDevice.SMART_LAMP)) {
             SmartLampDevice smartLampDevice = deviceMapper.deviceToSmartLampDevice(device);
-
-            if (smartLampDevice.getStatus() == null) {
-                smartLampDevice.setStatus(Status.ACTIVE);
-            }
-
-            if (smartLampDevice.getUser() == null) {
-                smartLampDevice.setUser(userService.getAuthenticationUser());
-            }
-
             SmartLampDevice saveSmartLamp = deviceRepository.save(smartLampDevice);
 
             return ResponseEntity.ok(saveSmartLamp);
@@ -225,15 +225,6 @@ public class UserController {
 
         if (device.getTypeDevice().equals(TypeDevice.HUMIDITY_SENSOR)) {
             HumiditySensorDevice humiditySensorDevice = deviceMapper.deviceToHumiditySensorDevice(device);
-
-            if (humiditySensorDevice.getStatus() == null) {
-                humiditySensorDevice.setStatus(Status.ACTIVE);
-            }
-
-            if (humiditySensorDevice.getUser() == null) {
-                humiditySensorDevice.setUser(userService.getAuthenticationUser());
-            }
-
             HumiditySensorDevice saveHumiditySensor = deviceRepository.save(humiditySensorDevice);
 
             return ResponseEntity.ok(saveHumiditySensor);
@@ -241,15 +232,6 @@ public class UserController {
 
         if (device.getTypeDevice().equals(TypeDevice.TEMPERATURE_SENSOR)) {
             TemperatureSensorDevice temperatureSensorDevice = deviceMapper.deviceToTemperatureSensorDevice(device);
-
-            if (temperatureSensorDevice.getStatus() == null) {
-                temperatureSensorDevice.setStatus(Status.ACTIVE);
-            }
-
-            if (temperatureSensorDevice.getUser() == null) {
-                temperatureSensorDevice.setUser(userService.getAuthenticationUser());
-            }
-
             TemperatureSensorDevice saveTemperatureSensor = deviceRepository.save(temperatureSensorDevice);
 
             return ResponseEntity.ok(saveTemperatureSensor);
@@ -257,15 +239,6 @@ public class UserController {
 
         if (device.getTypeDevice().equals(TypeDevice.SMART_PLUG)) {
             SmartPlugDevice smartPlugDevice = deviceMapper.deviceToSmartPlugDevice(device);
-
-            if (smartPlugDevice.getStatus() == null) {
-                smartPlugDevice.setStatus(Status.ACTIVE);
-            }
-
-            if (smartPlugDevice.getUser() == null) {
-                smartPlugDevice.setUser(userService.getAuthenticationUser());
-            }
-
             SmartPlugDevice saveSmartPlug = deviceRepository.save(smartPlugDevice);
 
             return ResponseEntity.ok(saveSmartPlug);
@@ -274,9 +247,27 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "405", description = "Invalid input"),
+            @ApiResponse(responseCode = "409", description = "Device already exists"),
+    })
+    @ApiOperation(value = "Update device data", notes = "Updating basic device data", authorizations = {@Authorization(value = "apiKey")})
     @PutMapping(value = "/devices/{id}", produces = "application/json")
-    public ResponseEntity<Device> updateDevice(@PathVariable("id") Long id, @Valid @RequestBody Device device, BindingResult bindingResult) {
+    public ResponseEntity<Device> updateDevice(@ApiParam(value = "The ID of the device to be updated", example = "1")
+                                               @PathVariable("id") Long id,
+                                               @ApiParam(value = "Basic description of the device with updated data", example = "Device")
+                                               @Valid @RequestBody Device device, BindingResult bindingResult) {
+        IdValidation.validate(id);
+
         if (bindingResult.hasErrors()) {
+            throw new InvalidException();
+        }
+
+        Device deviceToUpdate = deviceRepository.findById(id).orElseThrow(InvalidException::new);
+
+        if (deviceToUpdate.getUser().getId() != userService.getAuthenticationUser().getId()) {
             throw new InvalidException();
         }
 
@@ -284,21 +275,37 @@ public class UserController {
             throw new ExistsException();
         }
 
-        if (deviceRepository.findById(id).isPresent()) {
-            Device update = deviceRepository.findById(id).get();
-            device.setId(update.getId());
-            return ResponseEntity.ok(deviceRepository.save(device));
-        } else {
-            throw new NotFoundException();
-        }
+        deviceToUpdate.setModel(device.getModel());
+        deviceToUpdate.setSerialNumber(device.getSerialNumber());
+        deviceToUpdate.setMacAddress(device.getMacAddress());
+        deviceToUpdate.setFirmwareVersion(device.getFirmwareVersion());
+        deviceToUpdate.setIpAddress(device.getIpAddress());
+        deviceToUpdate.setStatus(device.getStatus());
+
+        Device save = deviceRepository.save(deviceToUpdate);
+        return ResponseEntity.ok(save);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Device not found"),
+            @ApiResponse(responseCode = "405", description = "Invalid input")
+    })
+    @ApiOperation(value = "Removing a device", notes = "Removing a device from a user", authorizations = {@Authorization(value = "apiKey")})
     @DeleteMapping(value = "/devices/{id}", produces = "application/json")
-    public void deleteDevice(@PathVariable("id") Long id) {
-        if (deviceRepository.findById(id).isPresent()) {
-            deviceRepository.deleteById(id);
-        } else {
+    public void deleteDevice(@ApiParam(value = "Enter the device ID to delete", example = "1")
+                             @PathVariable("id") Long id) {
+        IdValidation.validate(id);
+
+        if (deviceRepository.findById(id).isEmpty()) {
             throw new NotFoundException();
+        } else if (deviceRepository.findById(id).get().getUser().getId() != userService.getAuthenticationUser().getId()) {
+            throw new ForbiddenException();
+        } else {
+            Device device = deviceRepository.findById(id).get();
+            device.setStatus(Status.DELETED);
+            deviceRepository.save(device);
         }
     }
 }

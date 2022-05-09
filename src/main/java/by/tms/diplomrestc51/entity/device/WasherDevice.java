@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 //@NoArgsConstructor
 public class WasherDevice extends Device {
-
     @Override
     public TypeDevice getTypeDevice() {
         return super.getTypeDevice();
