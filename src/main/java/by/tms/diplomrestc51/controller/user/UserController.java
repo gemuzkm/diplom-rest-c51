@@ -159,7 +159,7 @@ public class UserController {
             @ApiResponse(responseCode = "405", description = "Invalid input")
     })
     @ApiOperation(value = "Get user device by ID", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
-    @GetMapping(value = "/devices/{id}", produces = "application/json")
+    @GetMapping(value = "/device/{id}", produces = "application/json")
     public ResponseEntity<Device> getDevice(@ApiParam(value = "The ID of the device you want to get information about", example = "1")
                                             @PathVariable("id") Long id) {
         IdValidation.validate(id);
@@ -180,7 +180,7 @@ public class UserController {
             @ApiResponse(responseCode = "405", description = "Invalid input")
     })
     @ApiOperation(value = "Add device to user", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
-    @PostMapping(value = "/devices", produces = "application/json")
+    @PostMapping(value = "/device", produces = "application/json")
     public ResponseEntity<?> createDevice(@Valid
                                           @ApiParam(value = "A device with a basic description is added", example = "Device")
                                           @RequestBody Device device, BindingResult bindingResult) {
@@ -254,7 +254,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Device already exists"),
     })
     @ApiOperation(value = "Update device data", notes = "Updating basic device data", authorizations = {@Authorization(value = "apiKey")})
-    @PutMapping(value = "/devices/{id}", produces = "application/json")
+    @PutMapping(value = "/device/{id}", produces = "application/json")
     public ResponseEntity<Device> updateDevice(@ApiParam(value = "The ID of the device to be updated", example = "1")
                                                @PathVariable("id") Long id,
                                                @ApiParam(value = "Basic description of the device with updated data", example = "Device")
@@ -293,7 +293,7 @@ public class UserController {
             @ApiResponse(responseCode = "405", description = "Invalid input")
     })
     @ApiOperation(value = "Removing a device", notes = "Removing a device from a user", authorizations = {@Authorization(value = "apiKey")})
-    @DeleteMapping(value = "/devices/{id}", produces = "application/json")
+    @DeleteMapping(value = "/device/{id}", produces = "application/json")
     public void deleteDevice(@ApiParam(value = "Enter the device ID to delete", example = "1")
                              @PathVariable("id") Long id) {
         IdValidation.validate(id);
