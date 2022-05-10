@@ -27,3 +27,12 @@ Run the following commands to build and run the application:
 - docker run -p 8080:8080 -d tms/diplom-rest-c51
 - docker ps
 - port 8080
+
+## Test users
+### Role - USER
+- Username: user
+- Password: pass
+ 
+### Role - ADMIN
+- Username: admin
+- Password: pass
