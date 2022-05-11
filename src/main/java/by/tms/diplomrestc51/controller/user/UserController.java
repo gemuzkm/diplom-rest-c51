@@ -39,13 +39,8 @@ import java.util.Optional;
 @Api(tags = "User", description = "Operations on the user")
 @RequestMapping("/api/v1/user")
 public class UserController {
-
-    @Autowired
-    private ParameterRepository parameterRepository;
-
-    @Autowired
-    private ParameterValuesRepository parameterValuesRepository;
-
+    private final ParameterRepository parameterRepository;
+    private final ParameterValuesRepository parameterValuesRepository;
     private final DeviceRepository deviceRepository;
     private final DeviceService deviceService;
     private final UserRepository userRepository;
@@ -54,11 +49,15 @@ public class UserController {
     public UserController(UserRepository userRepository,
                           UserService userService,
                           DeviceRepository deviceRepository,
-                          DeviceService deviceService) {
+                          DeviceService deviceService,
+                          ParameterRepository parameterRepository,
+                          ParameterValuesRepository parameterValuesRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.deviceRepository = deviceRepository;
         this.deviceService = deviceService;
+        this.parameterRepository = parameterRepository;
+        this.parameterValuesRepository = parameterValuesRepository;
     }
 
     @ApiResponses(value = {
@@ -299,6 +298,7 @@ public class UserController {
             throw new ForbiddenException();
         }
 
+        System.out.println(deviceService.getSupportedTypeParameters(device));
         Arrays.stream(TypeParameter.values()).filter(p -> p.equals(parameterDTO.getTypeParameter())).findFirst().orElseThrow(InvalidException::new);
 
         Parameter parameter = new Parameter();
