@@ -1,5 +1,7 @@
 package by.tms.diplomrestc51.entity;
 
+import by.tms.diplomrestc51.enums.TypeParameter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,12 +25,26 @@ public class Parameter {
     @Column(name = "created_date")
     private LocalDateTime created;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private TypeParameter type;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parameter")
     private List<ParameterValues> values;
 
-    public Parameter(String name) {
-        this.name = name;
+    public TypeParameter getType() {
+        return type;
+    }
+
+    public void setType(TypeParameter type) {
+        this.type = type;
+    }
+
+    public List<ParameterValues> getValues() {
+        return values;
+    }
+
+    public void setValues(List<ParameterValues> values) {
+        this.values = values;
     }
 }

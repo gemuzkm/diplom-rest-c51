@@ -1,6 +1,5 @@
 package by.tms.diplomrestc51.dto;
 
-import by.tms.diplomrestc51.entity.Parameter;
 import by.tms.diplomrestc51.enums.TypeParameter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParameterDTO {
-
     @NotNull
     private TypeParameter typeParameter;
 
