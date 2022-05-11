@@ -39,13 +39,8 @@ import java.util.Optional;
 @Api(tags = "User", description = "Operations on the user")
 @RequestMapping("/api/v1/user")
 public class UserController {
-
-    @Autowired
-    private ParameterRepository parameterRepository;
-
-    @Autowired
-    private ParameterValuesRepository parameterValuesRepository;
-
+    private final ParameterRepository parameterRepository;
+    private final ParameterValuesRepository parameterValuesRepository;
     private final DeviceRepository deviceRepository;
     private final DeviceService deviceService;
     private final UserRepository userRepository;
@@ -54,11 +49,15 @@ public class UserController {
     public UserController(UserRepository userRepository,
                           UserService userService,
                           DeviceRepository deviceRepository,
-                          DeviceService deviceService) {
+                          DeviceService deviceService,
+                          ParameterRepository parameterRepository,
+                          ParameterValuesRepository parameterValuesRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.deviceRepository = deviceRepository;
         this.deviceService = deviceService;
+        this.parameterRepository = parameterRepository;
+        this.parameterValuesRepository = parameterValuesRepository;
     }
 
     @ApiResponses(value = {
@@ -299,17 +298,21 @@ public class UserController {
             throw new ForbiddenException();
         }
 
-        Arrays.stream(TypeParameter.values()).filter(p -> p.equals(parameterDTO.getTypeParameter())).findFirst().orElseThrow(InvalidException::new);
+        List<String> supportedTypeParameters = deviceService.getSupportedTypeParameters(device);
 
-        Parameter parameter = new Parameter();
-        parameter.setType(parameterDTO.getTypeParameter());
-        parameter.setDevice(device);
+        if (supportedTypeParameters.contains(parameterDTO.getTypeParameter().toString())) {
+            Parameter parameter = new Parameter();
+            parameter.setType(parameterDTO.getTypeParameter());
+            parameter.setDevice(device);
 
-        ParameterValues parameterValues = new ParameterValues();
-        parameterValues.setValue(parameterDTO.getValue());
-        parameterValues.setParameter(parameter);
-        parameterValuesRepository.save(parameterValues);
+            ParameterValues parameterValues = new ParameterValues();
+            parameterValues.setValue(parameterDTO.getValue());
+            parameterValues.setParameter(parameter);
+            parameterValuesRepository.save(parameterValues);
 
-        parameterRepository.save(parameter);
+            parameterRepository.save(parameter);
+        } else {
+            throw new InvalidException();
+        }
     }
 }
