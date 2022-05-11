@@ -1,17 +1,38 @@
 package by.tms.diplomrestc51.entity.device;
 
 import by.tms.diplomrestc51.entity.Device;
+import by.tms.diplomrestc51.entity.Parameter;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 //@NoArgsConstructor
+@PropertySource("classpath:device/wisherdevice.properties")
 public class WasherDevice extends Device {
+
+//    @Value("#{'${SUPPORTED_PARAMETERS}'.split(',')}")
+//    @ManyToMany
+//    private List<Parameter> parameters;
+//
+//    public List<Parameter> getParameters() {
+//        return parameters;
+//    }
+//
+//    public void setParameters(List<Parameter> parameters) {
+//        this.parameters = parameters;
+//    }
+
     @Override
     public TypeDevice getTypeDevice() {
         return super.getTypeDevice();

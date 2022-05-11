@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "devices")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Device extends BaseEntity {
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private TypeDevice typeDevice;
@@ -31,6 +32,9 @@ public class Device extends BaseEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    public Device() {
+    }
 
     public TypeDevice getTypeDevice() {
         return typeDevice;

@@ -199,6 +199,8 @@ public class UserController {
             WasherDevice washerDevice = deviceMapper.deviceToWasherDevice(device);
             WasherDevice saveWasher = deviceRepository.save(washerDevice);
 
+//            System.out.println(saveWasher.getParameters());
+
             return ResponseEntity.ok(saveWasher);
         }
 
