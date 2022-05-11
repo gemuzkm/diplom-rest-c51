@@ -1,7 +1,7 @@
 package by.tms.diplomrestc51.repository;
 
 import by.tms.diplomrestc51.entity.Device;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,4 +13,6 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     Optional<String> findBySerialNumber(String serialNumber);
 
     Optional<String> findByMacAddress(String macAddress);
+
+
 }

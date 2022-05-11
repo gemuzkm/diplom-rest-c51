@@ -4,7 +4,6 @@ Data assembly and analysis. Generation of recommendations based on the processed
 
 ## Technology stack:
 - Java 11
-- Spring 5
 - Spring Boot
 - Database (MySQL and H2)
 - Spring Data JPA
@@ -17,6 +16,7 @@ Data assembly and analysis. Generation of recommendations based on the processed
 - Docker Compose
 - Mapper (MupStruct)
 - Swagger
+- Lombok
 
 Board (trello.com): https://trello.com/b/e1uD5GdK/diplom-rest-tms-c51
 

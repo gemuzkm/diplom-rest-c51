@@ -1,16 +1,20 @@
 package by.tms.diplomrestc51.controller.user;
 
+import by.tms.diplomrestc51.dto.ParameterDTO;
 import by.tms.diplomrestc51.entity.Device;
-import by.tms.diplomrestc51.entity.device.*;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.Parameter;
+import by.tms.diplomrestc51.entity.ParameterValues;
+import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
+import by.tms.diplomrestc51.enums.TypeParameter;
 import by.tms.diplomrestc51.exception.ExistsException;
 import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
-import by.tms.diplomrestc51.mapper.DeviceMapper;
 import by.tms.diplomrestc51.repository.DeviceRepository;
+import by.tms.diplomrestc51.repository.ParameterRepository;
+import by.tms.diplomrestc51.repository.ParameterValuesRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
 import by.tms.diplomrestc51.service.DeviceService;
 import by.tms.diplomrestc51.service.UserService;
@@ -22,12 +26,12 @@ import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,22 +40,25 @@ import java.util.Optional;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
+    @Autowired
+    private ParameterRepository parameterRepository;
+
+    @Autowired
+    private ParameterValuesRepository parameterValuesRepository;
+
     private final DeviceRepository deviceRepository;
     private final DeviceService deviceService;
-    private final DeviceMapper deviceMapper;
     private final UserRepository userRepository;
     private final UserService userService;
 
     public UserController(UserRepository userRepository,
                           UserService userService,
                           DeviceRepository deviceRepository,
-                          DeviceService deviceService,
-                          DeviceMapper deviceMapper) {
+                          DeviceService deviceService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.deviceRepository = deviceRepository;
         this.deviceService = deviceService;
-        this.deviceMapper = deviceMapper;
     }
 
     @ApiResponses(value = {
@@ -181,9 +188,9 @@ public class UserController {
     })
     @ApiOperation(value = "Add device to user", notes = "This can only be done by the logged in user", authorizations = {@Authorization(value = "apiKey")})
     @PostMapping(value = "/device", produces = "application/json")
-    public ResponseEntity<?> createDevice(@Valid
-                                          @ApiParam(value = "A device with a basic description is added", example = "Device")
-                                          @RequestBody Device device, BindingResult bindingResult) {
+    public ResponseEntity<Device> createDevice(@Valid
+                                               @ApiParam(value = "A device with a basic description is added", example = "Device")
+                                               @RequestBody Device device, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidException();
         }
@@ -195,56 +202,11 @@ public class UserController {
         device.setStatus(Status.ACTIVE);
         device.setUser(userService.getAuthenticationUser());
 
-        if (device.getTypeDevice().equals(TypeDevice.WASHER)) {
-            WasherDevice washerDevice = deviceMapper.deviceToWasherDevice(device);
-            WasherDevice saveWasher = deviceRepository.save(washerDevice);
-
-            return ResponseEntity.ok(saveWasher);
+        if (Arrays.stream(TypeDevice.values()).anyMatch((typeDevice -> typeDevice.name().equals(device.getTypeDevice().name())))) {
+            return ResponseEntity.ok(deviceRepository.save(device));
+        } else {
+            throw new ExistsException();
         }
-
-        if (device.getTypeDevice().equals(TypeDevice.REFRIGERATOR)) {
-            RefrigeratorDevice refrigeratorDevice = deviceMapper.deviceToRefrigeratorDevice(device);
-            RefrigeratorDevice saveRefrigerator = deviceRepository.save(refrigeratorDevice);
-
-            return ResponseEntity.ok(saveRefrigerator);
-        }
-
-        if (device.getTypeDevice().equals(TypeDevice.VACUUM_CLEANER)) {
-            VacuumCleanerDevice vacuumCleanerDevice = deviceMapper.deviceToVacuumCleanerDevice(device);
-            VacuumCleanerDevice saveVacuumCleaner = deviceRepository.save(vacuumCleanerDevice);
-
-            return ResponseEntity.ok(saveVacuumCleaner);
-        }
-
-        if (device.getTypeDevice().equals(TypeDevice.SMART_LAMP)) {
-            SmartLampDevice smartLampDevice = deviceMapper.deviceToSmartLampDevice(device);
-            SmartLampDevice saveSmartLamp = deviceRepository.save(smartLampDevice);
-
-            return ResponseEntity.ok(saveSmartLamp);
-        }
-
-        if (device.getTypeDevice().equals(TypeDevice.HUMIDITY_SENSOR)) {
-            HumiditySensorDevice humiditySensorDevice = deviceMapper.deviceToHumiditySensorDevice(device);
-            HumiditySensorDevice saveHumiditySensor = deviceRepository.save(humiditySensorDevice);
-
-            return ResponseEntity.ok(saveHumiditySensor);
-        }
-
-        if (device.getTypeDevice().equals(TypeDevice.TEMPERATURE_SENSOR)) {
-            TemperatureSensorDevice temperatureSensorDevice = deviceMapper.deviceToTemperatureSensorDevice(device);
-            TemperatureSensorDevice saveTemperatureSensor = deviceRepository.save(temperatureSensorDevice);
-
-            return ResponseEntity.ok(saveTemperatureSensor);
-        }
-
-        if (device.getTypeDevice().equals(TypeDevice.SMART_PLUG)) {
-            SmartPlugDevice smartPlugDevice = deviceMapper.deviceToSmartPlugDevice(device);
-            SmartPlugDevice saveSmartPlug = deviceRepository.save(smartPlugDevice);
-
-            return ResponseEntity.ok(saveSmartPlug);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @ApiResponses(value = {
@@ -307,5 +269,47 @@ public class UserController {
             device.setStatus(Status.DELETED);
             deviceRepository.save(device);
         }
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Device not found"),
+            @ApiResponse(responseCode = "405", description = "Invalid input")
+    })
+    @ApiOperation(value = "Add parameter by device", notes = "", authorizations = {@Authorization(value = "apiKey")})
+    @PostMapping(value = "/device/parameter/{id}", produces = "application/json")
+    public void addParameter(@ApiParam(value = "Enter the device ID to add the parameter", example = "1") @PathVariable("id") Long id,
+                             @ApiParam(value = "Input parameters", example = "ParameterDTO")
+                             @Valid @RequestBody ParameterDTO parameterDTO, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            throw new InvalidException();
+        }
+
+        IdValidation.validate(id);
+
+        if (deviceRepository.findById(id).isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        Device device = deviceRepository.findById(id).get();
+
+        if (device.getUser().getId() != userService.getAuthenticationUser().getId()) {
+            throw new ForbiddenException();
+        }
+
+        Arrays.stream(TypeParameter.values()).filter(p -> p.equals(parameterDTO.getTypeParameter())).findFirst().orElseThrow(InvalidException::new);
+
+        Parameter parameter = new Parameter();
+        parameter.setType(parameterDTO.getTypeParameter());
+        parameter.setDevice(device);
+
+        ParameterValues parameterValues = new ParameterValues();
+        parameterValues.setValue(parameterDTO.getValue());
+        parameterValues.setParameter(parameter);
+        parameterValuesRepository.save(parameterValues);
+
+        parameterRepository.save(parameter);
     }
 }
