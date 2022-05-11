@@ -1,17 +1,29 @@
 package by.tms.diplomrestc51.entity;
 
-import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "devices")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Device extends BaseEntity {
+    @JsonIgnore
+    @OneToMany(mappedBy = "device", fetch = FetchType.LAZY)
+    List<Parameter> parameters;
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
+    }
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private TypeDevice typeDevice;
@@ -31,6 +43,9 @@ public class Device extends BaseEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    public Device() {
+    }
 
     public TypeDevice getTypeDevice() {
         return typeDevice;

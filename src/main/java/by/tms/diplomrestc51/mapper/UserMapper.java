@@ -1,7 +1,7 @@
 package by.tms.diplomrestc51.mapper;
 
 import by.tms.diplomrestc51.dto.UserDTO;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.User;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 

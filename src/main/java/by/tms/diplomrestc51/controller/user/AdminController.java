@@ -1,11 +1,10 @@
 package by.tms.diplomrestc51.controller.user;
 
 import by.tms.diplomrestc51.entity.Device;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import by.tms.diplomrestc51.exception.ExistsException;
-import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.exception.NotFoundException;
 import by.tms.diplomrestc51.repository.DeviceRepository;
@@ -19,7 +18,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,19 +30,20 @@ import java.util.Optional;
 @Api(tags = "Admin", description = "Operations with users")
 @RequestMapping("/api/v1/admin")
 public class AdminController {
-    @Autowired
-    private DeviceRepository deviceRepository;
-
-    @Autowired
-    private DeviceService deviceService;
+    private final DeviceRepository deviceRepository;
+    private final DeviceService deviceService;
     private IdValidation idValidation;
     private final UserRepository userRepository;
     private final UserService userService;
 
     public AdminController(UserRepository userRepository,
-                           UserService userService) {
+                           UserService userService,
+                           DeviceRepository deviceRepository,
+                           DeviceService deviceService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.deviceRepository = deviceRepository;
+        this.deviceService = deviceService;
     }
 
     @ApiResponses(value = {

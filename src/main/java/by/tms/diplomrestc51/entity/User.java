@@ -1,8 +1,5 @@
-package by.tms.diplomrestc51.entity.user;
+package by.tms.diplomrestc51.entity;
 
-import by.tms.diplomrestc51.entity.BaseEntity;
-import by.tms.diplomrestc51.entity.Device;
-import by.tms.diplomrestc51.entity.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
