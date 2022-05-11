@@ -14,7 +14,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Device extends BaseEntity {
     @JsonIgnore
-    @ManyToMany
+    @OneToMany(mappedBy = "device", fetch = FetchType.LAZY)
     List<Parameter> parameters;
 
     public List<Parameter> getParameters() {

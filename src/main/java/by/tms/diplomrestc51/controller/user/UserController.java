@@ -3,6 +3,7 @@ package by.tms.diplomrestc51.controller.user;
 import by.tms.diplomrestc51.dto.ParameterDTO;
 import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.Parameter;
+import by.tms.diplomrestc51.entity.ParameterValues;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
@@ -299,7 +300,17 @@ public class UserController {
 
         Parameter parameter = device.getParameters().stream().filter(p -> p.getType().equals(parameterDTO.getTypeParameter())).findAny().orElse(null);
 
-        System.out.println(parameter);
+        if (parameter == null) {
+            parameter = new Parameter();
+            parameter.setType(parameterDTO.getTypeParameter());
+            parameter.setDevice(device);
+        }
 
+        ParameterValues parameterValues = new ParameterValues();
+        parameterValues.setValue(parameterDTO.getValue());
+        parameterValues.setParameter(parameter);
+        parameterValuesRepository.save(parameterValues);
+
+        parameterRepository.save(parameter);
     }
 }

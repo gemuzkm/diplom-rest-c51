@@ -34,4 +34,16 @@ public class Parameter {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parameter")
     private List<ParameterValues> values;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Device device;
+
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
+    }
 }
