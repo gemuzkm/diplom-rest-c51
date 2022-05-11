@@ -298,18 +298,21 @@ public class UserController {
             throw new ForbiddenException();
         }
 
-        System.out.println(deviceService.getSupportedTypeParameters(device));
-        Arrays.stream(TypeParameter.values()).filter(p -> p.equals(parameterDTO.getTypeParameter())).findFirst().orElseThrow(InvalidException::new);
+        List<String> supportedTypeParameters = deviceService.getSupportedTypeParameters(device);
 
-        Parameter parameter = new Parameter();
-        parameter.setType(parameterDTO.getTypeParameter());
-        parameter.setDevice(device);
+        if (supportedTypeParameters.contains(parameterDTO.getTypeParameter().toString())) {
+            Parameter parameter = new Parameter();
+            parameter.setType(parameterDTO.getTypeParameter());
+            parameter.setDevice(device);
 
-        ParameterValues parameterValues = new ParameterValues();
-        parameterValues.setValue(parameterDTO.getValue());
-        parameterValues.setParameter(parameter);
-        parameterValuesRepository.save(parameterValues);
+            ParameterValues parameterValues = new ParameterValues();
+            parameterValues.setValue(parameterDTO.getValue());
+            parameterValues.setParameter(parameter);
+            parameterValuesRepository.save(parameterValues);
 
-        parameterRepository.save(parameter);
+            parameterRepository.save(parameter);
+        } else {
+            throw new InvalidException();
+        }
     }
 }
