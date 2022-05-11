@@ -1,6 +1,8 @@
 package by.tms.diplomrestc51.controller.user;
 
+import by.tms.diplomrestc51.dto.ParameterDTO;
 import by.tms.diplomrestc51.entity.Device;
+import by.tms.diplomrestc51.entity.Parameter;
 import by.tms.diplomrestc51.entity.device.*;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
@@ -21,7 +23,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,11 +34,14 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+@PropertySource("classpath:device.properties")
 @RestController
 @Api(tags = "User", description = "Operations on the user")
 @RequestMapping("/api/v1/user")
 public class UserController {
 
+    @Value("#{'${washerDeviceParameters}'.split(',')}")
+    List<String> washerDeviceParameters;
     private final DeviceRepository deviceRepository;
     private final DeviceService deviceService;
     private final DeviceMapper deviceMapper;
@@ -199,7 +205,7 @@ public class UserController {
             WasherDevice washerDevice = deviceMapper.deviceToWasherDevice(device);
             WasherDevice saveWasher = deviceRepository.save(washerDevice);
 
-//            System.out.println(saveWasher.getParameters());
+            System.out.println(washerDeviceParameters);
 
             return ResponseEntity.ok(saveWasher);
         }
@@ -309,5 +315,17 @@ public class UserController {
             device.setStatus(Status.DELETED);
             deviceRepository.save(device);
         }
+    }
+
+    @ApiOperation(value = "Add parameter by device", notes = "", authorizations = {@Authorization(value = "apiKey")})
+    @PostMapping(value = "/device/parameter/{id}", produces = "application/json")
+    public void addParameter(@PathVariable("id") Long id, @Valid @RequestBody ParameterDTO parameterDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidException();
+        }
+
+        IdValidation.validate(id);
+
+
     }
 }

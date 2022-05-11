@@ -4,6 +4,7 @@ import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.Parameter;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
+import by.tms.diplomrestc51.enums.TypeParameter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -13,25 +14,25 @@ import org.springframework.context.annotation.PropertySource;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @AllArgsConstructor
-//@NoArgsConstructor
-@PropertySource("classpath:device/wisherdevice.properties")
+@NoArgsConstructor
 public class WasherDevice extends Device {
 
-//    @Value("#{'${SUPPORTED_PARAMETERS}'.split(',')}")
-//    @ManyToMany
-//    private List<Parameter> parameters;
-//
-//    public List<Parameter> getParameters() {
-//        return parameters;
-//    }
-//
-//    public void setParameters(List<Parameter> parameters) {
-//        this.parameters = parameters;
-//    }
+    @ManyToMany
+    private List<Parameter> parameters;
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
+    }
 
     @Override
     public TypeDevice getTypeDevice() {
