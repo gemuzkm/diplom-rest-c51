@@ -1,7 +1,7 @@
-package by.tms.diplomrestc51.entity.role;
+package by.tms.diplomrestc51.entity;
 
 import by.tms.diplomrestc51.entity.BaseEntity;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

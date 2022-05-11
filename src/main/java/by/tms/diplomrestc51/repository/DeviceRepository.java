@@ -1,8 +1,7 @@
 package by.tms.diplomrestc51.repository;
 
 import by.tms.diplomrestc51.entity.Device;
-import by.tms.diplomrestc51.entity.Parameter;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

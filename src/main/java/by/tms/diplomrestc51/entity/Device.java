@@ -1,6 +1,5 @@
 package by.tms.diplomrestc51.entity;
 
-import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

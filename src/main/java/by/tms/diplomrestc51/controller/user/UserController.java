@@ -4,7 +4,7 @@ import by.tms.diplomrestc51.dto.ParameterDTO;
 import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.Parameter;
 import by.tms.diplomrestc51.entity.ParameterValues;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import by.tms.diplomrestc51.enums.TypeParameter;

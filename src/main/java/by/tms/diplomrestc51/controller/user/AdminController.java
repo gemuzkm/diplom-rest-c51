@@ -1,7 +1,7 @@
 package by.tms.diplomrestc51.controller.user;
 
 import by.tms.diplomrestc51.entity.Device;
-import by.tms.diplomrestc51.entity.user.User;
+import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
 import by.tms.diplomrestc51.exception.ExistsException;
@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
