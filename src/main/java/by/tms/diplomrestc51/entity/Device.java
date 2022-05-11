@@ -7,11 +7,23 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "devices")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Device extends BaseEntity {
+    @JsonIgnore
+    @ManyToMany
+    List<Parameter> parameters;
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
+    }
 
     @NotNull
     @Enumerated(EnumType.STRING)
