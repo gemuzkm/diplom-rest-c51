@@ -4,7 +4,6 @@ Data assembly and analysis. Generation of recommendations based on the processed
 
 ## Technology stack:
 - Java 11
-- Spring 5
 - Spring Boot
 - Database (MySQL and H2)
 - Spring Data JPA
