@@ -7,6 +7,7 @@ import by.tms.diplomrestc51.entity.ParameterValues;
 import by.tms.diplomrestc51.entity.user.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.enums.TypeDevice;
+import by.tms.diplomrestc51.enums.TypeParameter;
 import by.tms.diplomrestc51.exception.ExistsException;
 import by.tms.diplomrestc51.exception.ForbiddenException;
 import by.tms.diplomrestc51.exception.InvalidException;
@@ -298,13 +299,11 @@ public class UserController {
             throw new ForbiddenException();
         }
 
-        Parameter parameter = device.getParameters().stream().filter(p -> p.getType().equals(parameterDTO.getTypeParameter())).findAny().orElse(null);
+        Arrays.stream(TypeParameter.values()).filter(p -> p.equals(parameterDTO.getTypeParameter())).findFirst().orElseThrow(InvalidException::new);
 
-        if (parameter == null) {
-            parameter = new Parameter();
-            parameter.setType(parameterDTO.getTypeParameter());
-            parameter.setDevice(device);
-        }
+        Parameter parameter = new Parameter();
+        parameter.setType(parameterDTO.getTypeParameter());
+        parameter.setDevice(device);
 
         ParameterValues parameterValues = new ParameterValues();
         parameterValues.setValue(parameterDTO.getValue());
