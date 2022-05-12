@@ -1,16 +1,15 @@
 package by.tms.diplomrestc51.service;
 
+import by.tms.diplomrestc51.dto.UserDTO;
 import by.tms.diplomrestc51.entity.Role;
 import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.enums.Status;
 import by.tms.diplomrestc51.exception.InvalidException;
 import by.tms.diplomrestc51.repository.RoleRepository;
 import by.tms.diplomrestc51.repository.UserRepository;
-import by.tms.diplomrestc51.validation.IdValidation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @MockBean
+    @Autowired
     private RoleRepository roleRepository;
 
     @Test
@@ -181,5 +180,161 @@ class UserServiceTest {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void deleteUser() {
+        User user = new User();
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role();
+        role.setName("USER");
+        roles.add(role);
+
+        user.setFirstName("userFirstName");
+        user.setLastName("userLastName");
+        user.setUsername("userUsername");
+        user.setPassword("userPassword");
+        user.setRoles(roles);
+        role.setUser(user);
+        user.setPassword("userPassword");
+        user.setEmail("user@gmail.com");
+        user.setStatus(Status.DELETED);
+        user.setPhone("+375291234567");
+
+        User saveActive = userRepository.save(user);
+        Role saveRole = roleRepository.save(role);
+        userService.deleteUser(saveActive);
+
+        assertEquals(Status.DELETED, saveActive.getStatus());
+    }
+
+    @Test
+    void existByEmailTrue() {
+        User user = new User();
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role();
+        role.setName("USER");
+        roles.add(role);
+
+        user.setFirstName("userFirstName");
+        user.setLastName("userLastName");
+        user.setUsername("userUsername");
+        user.setPassword("userPassword");
+        user.setRoles(roles);
+        role.setUser(user);
+        user.setPassword("userPassword");
+        user.setEmail("user@gmail.com");
+        user.setStatus(Status.DELETED);
+        user.setPhone("+375291234567");
+
+        User saveActive = userRepository.save(user);
+        Role saveRole = roleRepository.save(role);
+
+        assertTrue(userService.existByEmail(saveActive.getEmail()));
+    }
+
+    @Test
+    void existByEmailFalse() {
+        User user = new User();
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role();
+        role.setName("USER");
+        roles.add(role);
+
+        user.setFirstName("userFirstName");
+        user.setLastName("userLastName");
+        user.setUsername("userUsername");
+        user.setPassword("userPassword");
+        user.setRoles(roles);
+        role.setUser(user);
+        user.setPassword("userPassword");
+        user.setEmail("user@gmail.com");
+        user.setStatus(Status.DELETED);
+        user.setPhone("+375291234567");
+
+        User saveActive = userRepository.save(user);
+        Role saveRole = roleRepository.save(role);
+
+        assertFalse(userService.existByEmail("user" + saveActive.getEmail()));
+    }
+
+    @Test
+    void existByUsernameTrue() {
+        User user = new User();
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role();
+        role.setName("USER");
+        roles.add(role);
+
+        user.setFirstName("userFirstName");
+        user.setLastName("userLastName");
+        user.setUsername("userUsername");
+        user.setPassword("userPassword");
+        user.setRoles(roles);
+        role.setUser(user);
+        user.setPassword("userPassword");
+        user.setEmail("user@gmail.com");
+        user.setStatus(Status.DELETED);
+        user.setPhone("+375291234567");
+
+        User saveActive = userRepository.save(user);
+        Role saveRole = roleRepository.save(role);
+
+        assertTrue(userService.existByUsername(saveActive.getUsername()));
+    }
+
+    @Test
+    void existByUsernameFalse() {
+        User user = new User();
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role();
+        role.setName("USER");
+        roles.add(role);
+
+        user.setFirstName("userFirstName");
+        user.setLastName("userLastName");
+        user.setUsername("userUsername");
+        user.setPassword("userPassword");
+        user.setRoles(roles);
+        role.setUser(user);
+        user.setPassword("userPassword");
+        user.setEmail("user@gmail.com");
+        user.setStatus(Status.DELETED);
+        user.setPhone("+375291234567");
+
+        User saveActive = userRepository.save(user);
+        Role saveRole = roleRepository.save(role);
+
+        assertFalse(userService.existByUsername("user" + saveActive.getUsername()));
+    }
+
+    @Test
+    void registration() {
+
+        UserDTO userDto = new UserDTO();
+        userDto.setFirstName("userFirstName1");
+        userDto.setLastName("userLastName1");
+        userDto.setUsername("userUsername1");
+        userDto.setPassword("userPassword1");
+        userDto.setEmail("user@gmail.com1");
+        userDto.setPhone("+3752912345671");
+
+        userService.registration(userDto);
+
+        User user = userRepository.findByUsername(userDto.getUsername()).get();
+
+        assertEquals(userDto.getFirstName(), user.getFirstName());
+        assertEquals(userDto.getLastName(), user.getLastName());
+        assertEquals(userDto.getUsername(), user.getUsername());
+        assertFalse(user.getPassword().equals(userDto.getPassword()));
+        assertEquals(userDto.getEmail(), user.getEmail());
+        assertEquals(userDto.getPhone(), user.getPhone());
+        assertEquals(Status.ACTIVE, user.getStatus());
+        assertEquals("USER", user.getRoles().get(0).getName());
     }
 }
