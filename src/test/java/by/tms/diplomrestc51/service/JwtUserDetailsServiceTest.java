@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ class JwtUserDetailsServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @MockBean
     private RoleRepository roleRepository;
 
     @Test

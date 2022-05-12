@@ -315,8 +315,8 @@ class UserServiceTest {
 
     @Test
     void registration() {
-
         UserDTO userDto = new UserDTO();
+
         userDto.setFirstName("userFirstName1");
         userDto.setLastName("userLastName1");
         userDto.setUsername("userUsername1");
