@@ -98,7 +98,7 @@ public class UserService {
     }
 
     public boolean isActive(User user) {
-        if (user.getStatus().equals("ACTIVE")) {
+        if (user.getStatus().equals(Status.ACTIVE)) {
             return true;
         } else {
             throw new InvalidException("User is not active");
