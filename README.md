@@ -9,7 +9,8 @@ Data assembly and analysis. Generation of recommendations based on the processed
 - Spring Data JPA
 - Bean Validation
 - Logging SLF4j
-- Junit
+- JUnit 5
+- Spring Testing
 - Maven
 - Spring Security (JWT)
 - Docker

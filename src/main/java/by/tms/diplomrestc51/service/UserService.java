@@ -106,7 +106,7 @@ public class UserService {
     }
 
     public boolean isDeleted(User user) {
-        if (user.getStatus().equals("DELETED")) {
+        if (user.getStatus().equals(Status.DELETED)) {
             return true;
         } else {
             throw new InvalidException("User is not deleted");
