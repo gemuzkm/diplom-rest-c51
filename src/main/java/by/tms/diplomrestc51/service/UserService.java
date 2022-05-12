@@ -1,7 +1,6 @@
 package by.tms.diplomrestc51.service;
 
 import by.tms.diplomrestc51.dto.UserDTO;
-import by.tms.diplomrestc51.entity.Device;
 import by.tms.diplomrestc51.entity.Role;
 import by.tms.diplomrestc51.entity.User;
 import by.tms.diplomrestc51.enums.Status;
@@ -15,11 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 @Service
 @Slf4j
@@ -102,7 +98,7 @@ public class UserService {
     }
 
     public boolean isActive(User user) {
-        if (user.getStatus().equals("ACTIVE")) {
+        if (user.getStatus().equals(Status.ACTIVE)) {
             return true;
         } else {
             throw new InvalidException("User is not active");
@@ -110,7 +106,7 @@ public class UserService {
     }
 
     public boolean isDeleted(User user) {
-        if (user.getStatus().equals("DELETED")) {
+        if (user.getStatus().equals(Status.DELETED)) {
             return true;
         } else {
             throw new InvalidException("User is not deleted");
