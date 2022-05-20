@@ -16,6 +16,7 @@ Data assembly and analysis. Generation of recommendations based on the processed
 - Docker
 - Docker Compose
 - Mapper (MupStruct)
+- Flyway 
 - Swagger
 - Lombok
 
