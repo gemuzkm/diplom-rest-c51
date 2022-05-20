@@ -1,4 +1,4 @@
-package by.tms.diplomrestc51.configuration;
+package by.tms.diplomrestc51.configuration.flyway;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;

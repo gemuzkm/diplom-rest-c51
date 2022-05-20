@@ -1,4 +1,4 @@
-package by.tms.diplomrestc51.configuration;
+package by.tms.diplomrestc51.configuration.flyway;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
