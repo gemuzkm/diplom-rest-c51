@@ -91,8 +91,8 @@ public class AuthentificationController {
     @ApiOperation(value = "New user registration")
     @PostMapping("/reg")
     public ResponseEntity<UserDTO> registration(@Valid
-                                                    @ApiParam(value = "New user registration with verification of all datad")
-                                                    @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+                                                @ApiParam(value = "New user registration with verification of all datad")
+                                                @RequestBody UserDTO userDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors() | service.existByUsername(userDTO.getUsername()) | service.existByEmail(userDTO.getEmail())) {
             throw new InvalidException();
