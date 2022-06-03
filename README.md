@@ -27,7 +27,7 @@ Board (trello.com): https://trello.com/b/e1uD5GdK/diplom-rest-tms-c51
 Run the following commands to build and run the application:
 - git clone https://github.com/gemuzkm/diplom-rest-c51.git
 - cd diplom-rest-c51
-- mvn verify
+- mvn package
 - docker build -f Dockerfile.h2 -t tms/diplom-rest-c51 .
 - docker run -p 8080:8080 -d tms/diplom-rest-c51
 - docker ps
@@ -37,7 +37,7 @@ Run the following commands to build and run the application:
 Run the following commands to build and run the application:
 - git clone https://github.com/gemuzkm/diplom-rest-c51.git
 - cd diplom-rest-c51
-- Maven - LifeCycle: package
+- mvn package
 - docker-compose build
 - docker-compose up -d
 - docker-compose ps
