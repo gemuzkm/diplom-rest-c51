@@ -4,7 +4,10 @@
     <li><a href="#stack">Technology stack</a></li>
     <li><a href="#board">Board (trello.com)</a></li>
     <li><a href="#docker_h2">Docker (+ H2 database) developer version</a></li>
+    <li><a href="#port_service_docker">Ports & Services (Docker (+ H2 database) developer version)</a></li>
     <li><a href="#docker_mysql">Docker-compose (+ MySQL8 database) developer version</a></li>
+    <li><a href="#port_service_docker_compose">Ports & Services (Docker-compose (+ MySQL8 database)</a></li>
+    <li><a href="#test_users">Test users</a></li>
 </ol>
 
 <h2 id="about">About the project</h2>
@@ -67,7 +70,7 @@
 <h2 id="board">Board (trello.com)</h2>
 
 <p>
-  Link: <a href="https://trello.com/b/e1uD5GdK/diplom-rest-tms-c51">https://trello.com/b/e1uD5GdK/diplom-rest-tms-c51</a> 
+    Link: <a href="https://trello.com/b/e1uD5GdK/diplom-rest-tms-c51">https://trello.com/b/e1uD5GdK/diplom-rest-tms-c51</a> 
 </p>
 
 <h2 id="docker_h2">Docker (+ H2 database) developer version</h2>
@@ -99,9 +102,29 @@ docker run -p 8080:8080 -d tms/diplom-rest-c51
 docker ps
 ````
 
-````bash
-port 8080
-````
+<h2 id="port_service_docker">Ports & Services (Docker (+ H2 database) developer version)</h2>
+
+<ul>
+    <li>
+       Web port: <code>8080</code>
+    </li>    
+    <li>
+        Swagger URL: <code>{your_host_url}/swagger-ui/</code>
+    </li>
+    <li>
+        H2: <code>{your_host_url}/db/</code>
+    </li>
+    <li>
+        H2 JDBC URL: <code>jdbc:h2:mem:db</code>
+    </li>
+    <li>
+        H2 User Name: <code>sa</code>
+    </li>
+    <li>
+        H2 Password: <code>{empty}</code> (login without password)
+    </li>
+</ul>
+
 
 <h2 id="docker_mysql">Docker-compose (+ MySQL8 database) developer version</h2>
 <p>
@@ -132,23 +155,39 @@ docker-compose up -d
 docker-compose ps
 ````
 
-````bash
-docker-compose ps
-````
+<h2 id="port_service_docker_compose">Ports & Services (Docker-compose (+ MySQL8 database)</h2>
+<ul>
+    <li>
+        Mysql access port: <code>3307</code>
+    </li>
+    <li>
+       Web port: <code>8081</code>
+    </li>
+    <li>
+        Swagger URL: <code>{your_host_url}/swagger-ui/</code>
+    </li>
+</ul>
 
-### Ports & Services:
+<h2 id="test_users">Test users</h2>
+<h3>Role - USER</h3>
+<ul>
+    <li>
+        Username: <code>user</code>
+    </li>
+    <li>
+       Password: <code>pass</code>
+    </li>
+</ul>
 
-- Mysql access port: <code>3307</code>
-- Web port: <code>8081</code>
-
-## Test users
-### Role - USER
-- Username: <code>user</code>
-- Password: <code>pass</code>
-
-### Role - ADMIN
-- Username: <code>admin</code>
-- Password: <code>pass
+<h3>Role - ADMIN</h3>
+<ul>
+    <li>
+        Username: <code>admin</code>
+    </li>
+    <li>
+       Password: <code>pass</code>
+    </li>
+</ul>
 
 <br />
 <div align="center">
